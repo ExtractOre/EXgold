@@ -1,4 +1,4 @@
-const { accounts, contract, web3 } = require("@openzeppelin/test-environment");
+const { accounts, contract } = require("@openzeppelin/test-environment");
 const BN = require("big-number");
 const { expect } = require("chai");
 const truffleAssert = require("truffle-assertions");
