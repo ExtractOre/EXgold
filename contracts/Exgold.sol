@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity ^0.6.0;
 
-// Import base and ERC20 contract
+// Import base ERC20 Upgradeable contract
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol";
 
 contract Exgold is ERC20UpgradeSafe {
@@ -15,10 +16,11 @@ contract Exgold is ERC20UpgradeSafe {
     function initialize(
         string memory _name,
         string memory _symbol,
-        uint8 _decimals
+        uint8 _decimals,
+        uint256 _totalSupply
     ) public initializer {
         __ERC20_init(_name, _symbol);
         _setupDecimals(_decimals);
-        _mint(msg.sender, 5000000 * (10**uint256(_decimals)));
+        _mint(msg.sender, _totalSupply * (10**uint256(decimals())));
     }
 }
