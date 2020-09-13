@@ -17,7 +17,7 @@ contract MinerCards is ERC1155 {
     address private owner;
 
     // Mapping from token ID to total supply
-    mapping(uint256 => uint256) public tokenSupply;
+    mapping(uint256 => uint256) public _totalSupply;
 
     /**
      * @dev Require msg.sender to be an admin
@@ -51,7 +51,7 @@ contract MinerCards is ERC1155 {
         );
 
         _mint(_account, _id, _quantity, "");
-        tokenSupply[_id] = tokenSupply[_id].add(_quantity);
+        _totalSupply[_id] = _totalSupply[_id].add(_quantity);
     }
 
     function getowner() public view returns (address) {
@@ -81,7 +81,7 @@ contract MinerCards is ERC1155 {
         _mintBatch(_account, _ids, _amounts, "");
 
         for (uint256 i = 0; i < _amounts.length; i++) {
-            tokenSupply[_ids[i]] = tokenSupply[_ids[i]].add(_amounts[i]);
+            _totalSupply[_ids[i]] = _totalSupply[_ids[i]].add(_amounts[i]);
         }
     }
 
@@ -98,5 +98,10 @@ contract MinerCards is ERC1155 {
         }
 
         return false;
+    }
+
+    // get the total supply for a token type `_id`
+    function totalSupply(uint256 _id) public view returns (uint256) {
+        return _totalSupply[_id];
     }
 }

@@ -41,6 +41,15 @@ describe("MinerCards", function() {
       expect(balance.toString()).to.equal(mintAmount.toString());
     });
 
+    it("should update token supply", async () => {
+      await minerCards.mint(accounts[0], tokenID, mintAmount, {
+        from: accounts[0],
+      });
+
+      const totalSupply = await minerCards.totalSupply(tokenID);
+      expect(totalSupply.toString()).to.equal(mintAmount.toString());
+    });
+
     it("should revert when mint is called by unauthorized sender", async () => {
       await expectRevert(
         minerCards.mint(accounts[0], tokenID, mintAmount, {
@@ -101,6 +110,24 @@ describe("MinerCards", function() {
       expect(balance_3.toString()).to.equal(mintAmounts[2].toString());
       expect(balance_4.toString()).to.equal(mintAmounts[3].toString());
       expect(balance_5.toString()).to.equal(mintAmounts[4].toString());
+    });
+
+    it("should update token supply", async () => {
+      await minerCards.mintBatch(accounts[0], tokenBatchIds, mintAmounts, {
+        from: accounts[0],
+      });
+
+      const totalSupply_1 = await minerCards.totalSupply(tokenBatchIds[0]);
+      const totalSupply_2 = await minerCards.totalSupply(tokenBatchIds[1]);
+      const totalSupply_3 = await minerCards.totalSupply(tokenBatchIds[2]);
+      const totalSupply_4 = await minerCards.totalSupply(tokenBatchIds[3]);
+      const totalSupply_5 = await minerCards.totalSupply(tokenBatchIds[4]);
+
+      expect(totalSupply_1.toString()).to.equal(mintAmounts[0].toString());
+      expect(totalSupply_2.toString()).to.equal(mintAmounts[1].toString());
+      expect(totalSupply_3.toString()).to.equal(mintAmounts[2].toString());
+      expect(totalSupply_4.toString()).to.equal(mintAmounts[3].toString());
+      expect(totalSupply_5.toString()).to.equal(mintAmounts[4].toString());
     });
 
     it("should revert when mintBatch is called with a null destination address", async () => {
