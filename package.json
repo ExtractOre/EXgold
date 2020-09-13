@@ -16,7 +16,8 @@
     "truffle-assertions": "^0.9.2"
   },
   "devDependencies": {
-    "@openzeppelin/test-environment": "^0.1.4"
+    "@openzeppelin/test-environment": "^0.1.4",
+    "openzeppelin-test-helpers": "^0.5.1"
   },
   "scripts": {
     "test": "npx mocha --exit --recursive"

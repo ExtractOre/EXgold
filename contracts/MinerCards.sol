@@ -23,7 +23,7 @@ contract MinerCards is ERC1155 {
      * @dev Require msg.sender to be an admin
      */
     modifier onlyOwner() {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "Sender is not authorized!");
         _;
     }
 
@@ -45,10 +45,13 @@ contract MinerCards is ERC1155 {
         uint256 _id,
         uint256 _quantity
     ) public onlyOwner {
-        require(msg.sender == owner, "Sender is not authorized!");
         require(_id >= 0 && _id <= 4, "MinerCards: Invalid Token Type.");
 
         _mint(_to, _id, _quantity, "");
         tokenSupply[_id] = tokenSupply[_id].add(_quantity);
+    }
+
+    function getowner() public view returns (address) {
+        return owner;
     }
 }
