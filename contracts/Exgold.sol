@@ -23,4 +23,11 @@ contract Exgold is ERC20UpgradeSafe {
         _setupDecimals(_decimals);
         _mint(msg.sender, _totalSupply * (10**uint256(decimals())));
     }
+
+    /**
+     * @dev Destroys `amount` tokens from the caller.
+     */
+    function burn(uint256 amount) public virtual {
+        _burn(_msgSender(), amount);
+    }
 }
