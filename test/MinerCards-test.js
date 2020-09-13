@@ -9,8 +9,14 @@ const MinerCards = contract.fromArtifact("MinerCards");
 
 describe("MinerCards", function() {
   const mintAmount = new BN(5000);
-  const tokenID = new BN(1);
-  const tokenBatchIds = [new BN(0), new BN(1), new BN(2), new BN(3), new BN(4)];
+  const tokenID = new BN(100);
+  let tokenBatchIds = [
+    new BN(25),
+    new BN(50),
+    new BN(100),
+    new BN(250),
+    new BN(1000),
+  ];
   const mintAmounts = [
     new BN(5000),
     new BN(10000),
@@ -58,7 +64,7 @@ describe("MinerCards", function() {
         minerCards.mint(accounts[0], new BN(7), mintAmount, {
           from: accounts[0],
         }),
-        "MinerCards: Invalid Token Type."
+        "MinerCards.mint: Invalid Token Type."
       );
     });
   });
@@ -102,40 +108,18 @@ describe("MinerCards", function() {
         minerCards.mintBatch(ZERO_ADDRESS, tokenBatchIds, mintAmounts, {
           from: accounts[0],
         }),
-        "ERC1155: mint to the zero address"
+        "ERC1155: mint to the zero address."
       );
     });
-  });
 
-  it("should revert if length of inputs do not match", async () => {
-    await expectRevert(
-      minerCards.mintBatch(accounts[0], tokenBatchIds, mintAmounts.slice(1), {
-        from: accounts[0],
-      }),
-      "ERC1155: ids and amounts length mismatch"
-    );
-  });
-
-  it("should revert when mintBatch is called with invalid token type", async () => {
-    const invalidtokenBatchIds = [
-      new BN(0),
-      new BN(1),
-      new BN(2),
-      new BN(3),
-      new BN(5),
-    ];
-
-    await expectRevert(
-      minerCards.mintBatch(
-        accounts[0],
-        invalidtokenBatchIds,
-        mintAmounts.slice(1),
-        {
+    it("should revert if length of inputs do not match", async () => {
+      await expectRevert(
+        minerCards.mintBatch(accounts[0], tokenBatchIds, mintAmounts.slice(1), {
           from: accounts[0],
-        }
-      ),
-      "MinerCards.mintBatch: Invalid Token Type."
-    );
+        }),
+        "ERC1155: ids and amounts length mismatch."
+      );
+    });
 
     it("should revert if mintBatch is called by unauthorized sender", async () => {
       await expectRevert(
@@ -143,6 +127,17 @@ describe("MinerCards", function() {
           from: accounts[1],
         }),
         "Sender is not authorized!"
+      );
+    });
+
+    it("should revert when mintBatch is called with invalid token type", async () => {
+      tokenBatchIds[tokenBatchIds.length - 1] = new BN(10);
+
+      await expectRevert(
+        minerCards.mintBatch(accounts[0], tokenBatchIds, mintAmounts.slice(1), {
+          from: accounts[0],
+        }),
+        "MinerCards.mintBatch: Invalid Token Type."
       );
     });
   });

@@ -8,11 +8,11 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 contract MinerCards is ERC1155 {
     using SafeMath for uint256;
 
-    uint256 public constant MINERCARD_1 = 0;
-    uint256 public constant MINERCARD_2 = 1;
-    uint256 public constant MINERCARD_3 = 2;
-    uint256 public constant MINERCARD_4 = 3;
-    uint256 public constant MINERCARD_5 = 4;
+    uint256 public constant MINERCARD_1 = 25;
+    uint256 public constant MINERCARD_2 = 50;
+    uint256 public constant MINERCARD_3 = 100;
+    uint256 public constant MINERCARD_4 = 250;
+    uint256 public constant MINERCARD_5 = 1000;
 
     address private owner;
 
@@ -45,7 +45,10 @@ contract MinerCards is ERC1155 {
         uint256 _id,
         uint256 _quantity
     ) public onlyOwner {
-        require(_id >= 0 && _id <= 4, "MinerCards: Invalid Token Type.");
+        require(
+            validateTokenType(_id) == true,
+            "MinerCards.mint: Invalid Token Type."
+        );
 
         _mint(_account, _id, _quantity, "");
         tokenSupply[_id] = tokenSupply[_id].add(_quantity);
@@ -71,7 +74,7 @@ contract MinerCards is ERC1155 {
     ) public onlyOwner {
         for (uint256 i = 0; i < _ids.length; i++) {
             require(
-                checkID(_ids[i]) != false,
+                validateTokenType(_ids[i]) == true,
                 "MinerCards.mintBatch: Invalid Token Type."
             );
         }
@@ -83,7 +86,17 @@ contract MinerCards is ERC1155 {
     }
 
     // checks if `_id` is a valid token type
-    function checkID(uint256 _id) internal returns (bool) {
-        return (_id >= 0 && _id <= 4);
+    function validateTokenType(uint256 _id) internal returns (bool) {
+        if (
+            _id == MINERCARD_1 ||
+            _id == MINERCARD_2 ||
+            _id == MINERCARD_3 ||
+            _id == MINERCARD_4 ||
+            _id == MINERCARD_5
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
