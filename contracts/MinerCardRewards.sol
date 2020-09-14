@@ -3,16 +3,13 @@
 pragma solidity ^0.6.0;
 
 import "./MinerCards.sol";
-import "./Exgold.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/Initializable.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
 
 contract MinerCardRewards is Initializable {
     using SafeMath for uint256;
-    using SafeERC20 for Exgold;
 
-    Exgold private token;
+    IERC20 private token;
     MinerCards private minerCards;
     uint256 private time;
     uint256 private rate;
@@ -21,7 +18,7 @@ contract MinerCardRewards is Initializable {
     mapping(address => uint256) private timeLock;
 
     // mapping from address to lockAmount
-    mapping(address => uint256) private accountBalances;
+    mapping(address => uint256) private balances;
 
     /* uint256 private constant MINERCARD_1 = 25;
     uint256 private constant MINERCARD_2 = 50;
@@ -62,8 +59,8 @@ contract MinerCardRewards is Initializable {
     ) public initializer {
         time = _time;
         rate = _rate;
-        minercards = MinerCards(_minerCards);
-        token = Exgold(_tokenAddress);
+        minerCards = MinerCards(_minerCards);
+        token = IERC20(_tokenAddress);
     }
 
     /**
@@ -82,7 +79,7 @@ contract MinerCardRewards is Initializable {
             balance > 0,
             "MinerCardRewards: Account has insufficient miner card token to lock funds."
         );
-        uint256 allowance = exgold.allowance(_account, adddress(this));
+        uint256 allowance = token.allowance(_account, address(this));
         require(
             allowance >= _lockAmount,
             "MinerCardRewards: lockAmount exceeds allowance."
@@ -91,8 +88,8 @@ contract MinerCardRewards is Initializable {
             _id == _lockAmount,
             "MinerCardRewards: id not equal to lock amount."
         );
-        token.safeTransferFrom(token, _account, address(this), lockAmount);
-        accountBalances[_account] = accountBalances[_account].add(_lockAmount);
+        token.transferFrom(_account, address(this), _lockAmount);
+        balances[_account] = balances[_account].add(_lockAmount);
         timeLock[_account] = block.timestamp;
         emit LockFund(_account, _id, _lockAmount);
     }
@@ -105,14 +102,13 @@ contract MinerCardRewards is Initializable {
      */
     function release() public {
         require(
-            timeLock[msg.sender] != 0 && balances(msg.sender) != 0,
+            timeLock[msg.sender] != 0 && balances[msg.sender] != 0,
             "MinerCardRewards: no funds locked."
         );
-        uint256 balance = accountBalances[msg.sender];
-        token.safeTransfer(msg.sender, balance);
-        accountBalances[_msg.sender] = accountBalances[msg.sender].sub(balance);
+        uint256 balance = balances[msg.sender];
+        token.transfer(msg.sender, balance);
+        balances[msg.sender] = balances[msg.sender].sub(balance);
         emit Release(msg.sender, balance);
-        return true;
     }
 
     /**
@@ -120,28 +116,25 @@ contract MinerCardRewards is Initializable {
      * Dividends is 5% of amount locked
      * Emits `Withdraw` event.
      */
-    function withdraw() public returns (bool) {
+    function withdraw() public {
         require(
             block.timestamp >= timeLock[msg.sender],
             "MinerCardRewards: current time is before release time."
         );
         require(
-            timeLock[msg.sender] != 0 && balances(msg.sender) != 0,
+            timeLock[msg.sender] != 0 && balances[msg.sender] != 0,
             "MinerCardRewards: no funds locked."
         );
 
-        uint256 _balance = accountBalances[msg.sender];
+        uint256 _balance = balances[msg.sender];
         uint256 dividends = calcDividends(_balance, timeLock[msg.sender]);
         require(
             token.balanceOf(address(this)) >= dividends,
             "MinerCardRewards: Insufficient funds to pay dividends"
         );
-        token.safeTransfer(msg.sender, _balance.add(dividends));
-        accountBalances[_msg.sender] = accountBalances[msg.sender].sub(
-            _balance
-        );
+        token.transfer(msg.sender, _balance.add(dividends));
+        balances[msg.sender] = balances[msg.sender].sub(_balance);
         emit Release(msg.sender, _balance);
-        return bool;
     }
 
     /**
