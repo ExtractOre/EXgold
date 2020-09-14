@@ -1111,6 +1111,12 @@
     "evmVersion": "petersburg"
   },
   "networks": {
+    "3": {
+      "links": {},
+      "events": {},
+      "address": "0x74C93c746bc94515f851686090c1601d23250E79",
+      "updated_at": 1600028861204
+    },
     "1599905595326": {
       "links": {},
       "events": {},

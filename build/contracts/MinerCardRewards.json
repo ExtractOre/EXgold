@@ -1,0 +1,62 @@
+{
+  "fileName": "MinerCardRewards.sol",
+  "contractName": "MinerCardRewards",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.6.0;\n\ncontract MinerCardRewards {}\n",
+  "sourcePath": "contracts/MinerCardRewards.sol",
+  "sourceMap": "58:28:16:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "58:28:16:-:0;;;;;",
+  "abi": [],
+  "ast": {
+    "absolutePath": "contracts/MinerCardRewards.sol",
+    "exportedSymbols": {
+      "MinerCardRewards": [
+        2734
+      ]
+    },
+    "id": 2735,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2733,
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:23:16"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 2734,
+        "linearizedBaseContracts": [
+          2734
+        ],
+        "name": "MinerCardRewards",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 2735,
+        "src": "58:28:16"
+      }
+    ],
+    "src": "33:54:16"
+  },
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea26469706673582212208eaafcdd3818ca146196a75e421ad0f4e419c2f68cd4c690f41ffbf9e6b5427564736f6c634300060c0033",
+  "deployedBytecode": "0x6080604052600080fdfea26469706673582212208eaafcdd3818ca146196a75e421ad0f4e419c2f68cd4c690f41ffbf9e6b5427564736f6c634300060c0033",
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.12+commit.27d51765.Emscripten.clang",
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "evmVersion": "petersburg"
+  }
+}
