@@ -11,11 +11,12 @@ contract MinerCardRewards is Initializable {
 
     IERC20 private token;
     MinerCards private minerCards;
-    uint256 private time;
+    uint256 private _releaseTime;
     uint256 private rate;
+    uint256 public _t;
 
     // mapping from address to time
-    mapping(address => uint256) private timeLock;
+    mapping(address => uint256) private unLockDates;
 
     // mapping from address to lockAmount
     mapping(address => uint256) private balances;
@@ -57,7 +58,7 @@ contract MinerCardRewards is Initializable {
         uint256 _time,
         uint256 _rate
     ) public initializer {
-        time = _time;
+        _releaseTime = _time;
         rate = _rate;
         minerCards = MinerCards(_minerCards);
         token = IERC20(_tokenAddress);
@@ -66,6 +67,7 @@ contract MinerCardRewards is Initializable {
     /**
      * @dev  Locks `_account` funds
      * Contract transfers the lock amount from `_account` to contract.
+     * `_account` must set (ERC-20) allowance for contract address, else transaction reverts
      * Sets the lock time and balances.
      * Emits `LockFund` event.
      */
@@ -90,7 +92,8 @@ contract MinerCardRewards is Initializable {
         );
         token.transferFrom(_account, address(this), _lockAmount);
         balances[_account] = balances[_account].add(_lockAmount);
-        timeLock[_account] = block.timestamp;
+        unLockDates[_account] = block.timestamp.add(_releaseTime);
+        _t = unLockDates[_account];
         emit LockFund(_account, _id, _lockAmount);
     }
 
@@ -102,7 +105,7 @@ contract MinerCardRewards is Initializable {
      */
     function release() public {
         require(
-            timeLock[msg.sender] != 0 && balances[msg.sender] != 0,
+            unLockDates[msg.sender] != 0 && balances[msg.sender] != 0,
             "MinerCardRewards: no funds locked."
         );
         uint256 balance = balances[msg.sender];
@@ -118,33 +121,58 @@ contract MinerCardRewards is Initializable {
      */
     function withdraw() public {
         require(
-            block.timestamp >= timeLock[msg.sender],
-            "MinerCardRewards: current time is before release time."
+            unLockDates[msg.sender] != 0 && balances[msg.sender] != 0,
+            "MinerCardRewards: no funds locked."
         );
         require(
-            timeLock[msg.sender] != 0 && balances[msg.sender] != 0,
-            "MinerCardRewards: no funds locked."
+            block.timestamp >= unLockDates[msg.sender],
+            "MinerCardRewards: current time is before release time."
         );
 
         uint256 _balance = balances[msg.sender];
-        uint256 dividends = calcDividends(_balance, timeLock[msg.sender]);
+        uint256 dividends = calcDividends(_balance);
         require(
             token.balanceOf(address(this)) >= dividends,
             "MinerCardRewards: Insufficient funds to pay dividends"
         );
         token.transfer(msg.sender, _balance.add(dividends));
         balances[msg.sender] = balances[msg.sender].sub(_balance);
-        emit Release(msg.sender, _balance);
+        emit Withdraw(msg.sender, _balance, dividends);
     }
 
     /**
      * @dev calculate dividends for `_lockAmount`
      */
-    function calcDividends(uint256 _lockAmount, uint256 _lockTime)
-        private
-        returns (uint256)
-    {
+    function calcDividends(uint256 _lockAmount) private view returns (uint256) {
         uint256 a = rate.div(100);
         return a.mul(_lockAmount);
+    }
+
+    // return release time
+    function releaseTime() public view returns (uint256) {
+        return _releaseTime;
+    }
+
+    // return rate
+    function getRate() public view returns (uint256) {
+        return rate;
+    }
+
+    // get the time at which funds were locked for `_account`
+    function accountReleaseTime(address _account)
+        public
+        view
+        returns (uint256)
+    {
+        return unLockDates[_account];
+    }
+
+    // return `_account` balance locked in contract.
+    function balance(address _account) public view returns (uint256) {
+        return balances[_account];
+    }
+
+    function tt() public view returns (uint256) {
+        return _t;
     }
 }

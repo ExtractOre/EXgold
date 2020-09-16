@@ -168,4 +168,27 @@ describe("MinerCards", function() {
       );
     });
   });
+
+  describe("safeTransferFrom(address, address, uint256, uint256, bytes calldata)", function() {
+    it("should make a safeTransfer", async () => {
+      const value = new BN(1000);
+      const ID = tokenBatchIds[0];
+
+      await minerCards.mint(accounts[0], ID, mintAmount, {
+        from: accounts[0],
+      });
+
+      await minerCards.safeTransferFrom(
+        accounts[0],
+        accounts[1],
+        ID,
+        value,
+        "0x0",
+        { from: accounts[0] }
+      );
+
+      const balance = await minerCards.balanceOf(accounts[1], ID);
+      expect(balance.toString()).to.equal(value.toString());
+    });
+  });
 });

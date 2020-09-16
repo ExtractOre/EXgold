@@ -86,7 +86,7 @@ contract MinerCards is ERC1155 {
     }
 
     // checks if `_id` is a valid token type
-    function validateTokenType(uint256 _id) internal returns (bool) {
+    function validateTokenType(uint256 _id) internal pure returns (bool) {
         if (
             _id == MINERCARD_1 ||
             _id == MINERCARD_2 ||

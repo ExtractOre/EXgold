@@ -42,7 +42,7 @@ describe("Exgold", function() {
 
     await truffleAssert.reverts(
       exgold.initialize("Gold", "GLD", 18, totalSupply, { from: accounts[1] }),
-      " Contract instance has already been initialized."
+      "Contract instance has already been initialized."
     );
   });
 
