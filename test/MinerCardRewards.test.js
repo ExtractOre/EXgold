@@ -76,14 +76,13 @@ describe("MinerCardRewards", function() {
 
   describe("withdraw()", function() {
     it("should withdraw funds", async () => {
-      releaseTime = time.duration.seconds(1).toString();
+      releaseTime = time.duration.seconds(5).toString();
       initialize(releaseTime);
 
       await lockFunds();
       console.log("ADDRESS:   ", addr1._address);
 
       const receipt = await minerCardRewards.connect(addr1).withdraw();
-      console.log(receipt);
       expectEvent(receipt, "Withdraw", {
         _account: addr1,
         _lockAmount: amount[0],

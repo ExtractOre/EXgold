@@ -100,6 +100,7 @@ contract MinerCardRewards is Initializable {
         emit LockFund(_account, _id, _lockAmount);
         console.log(
             "Funds locked at time: ",
+            block.timestamp,
             unLockDates[_account],
             _releaseTime
         );
