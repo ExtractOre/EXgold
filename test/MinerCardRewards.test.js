@@ -8,6 +8,8 @@ const {
 } = require("openzeppelin-test-helpers");
 
 require("chai").should;
+const ganache = require("ganache-core");
+web3.setProvider(ganache.provider());
 
 const MinerCardRewards = contract.fromArtifact("MinerCardRewards");
 const MinerCards = contract.fromArtifact("MinerCards");
@@ -38,21 +40,25 @@ describe("MinerCardRewards", function() {
     );
   };
 
+  const increaseTime = async (time) => {
+    await web3.currentProvider.send(
+      {
+        jsonrpc: "2.0",
+        method: "evm_increaseTime",
+        params: [time],
+        id: 0,
+      },
+      (err, data) => {
+        console.log("DATA: ", data);
+      }
+    );
+  };
+
   async function timeIncreaseTo(duration) {
-    /* console.log("DATE: ", new Date().getMilliseconds());
     const delay = 1000 - new Date().getMilliseconds();
-    await new Promise((resolve) => setTimeout(resolve, delay)); */
+    await new Promise((resolve) => setTimeout(resolve, delay));
     await time.increaseTo(seconds);
   }
-
-  const advanceBlockAtTime = async (time) => {
-    await web3.currentProvider.send({
-      jsonrpc: "2.0",
-      method: "evm_mine",
-      params: [time],
-      id: new Date().getTime(),
-    });
-  };
 
   const mintNft = async (owner, amount, ID) => {
     await minerCards.mint(owner, ID, amount, {
@@ -202,23 +208,18 @@ describe("MinerCardRewards", function() {
     });
   });
 
-  describe("withdraw()", function() {
+  context("withdraw()", function() {
     it("should withdraw funds", async () => {
-      releaseTime = time.duration.days(90);
+      releaseTime = time.duration.seconds(0);
+      //await time.increaseTo((await time.latest()).add(time.duration.days(95)));
+
       initialize(releaseTime);
       await lockFunds();
-
-      // Skip 1 day
-      //await timeIncreaseTo((await time.latest()).add(time.duration.days(100)));
-
-      // Skip 1 day
-      await time.increase((await time.latest()).add(time.duration.years(100)));
-
-      // Skip 1 day
-      /* await timeIncreaseTo(
-        (await time.latest()).add(time.duration.years(1)).subn(1)
-      ); */
-
+      console.log(
+        "60: ",
+        (await time.latest()).add(time.duration.years(5)).toString()
+      );
+      await increaseTime((await time.latest()).add(time.duration.years(5)));
       const receipt = await minerCardRewards.withdraw({ from: accounts[1] });
       expectEvent(receipt, "Withdraw", {
         _account: accounts[1],
