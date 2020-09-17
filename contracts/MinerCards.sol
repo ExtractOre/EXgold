@@ -4,6 +4,7 @@ pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@nomiclabs/buidler/console.sol";
 
 contract MinerCards is ERC1155 {
     using SafeMath for uint256;
@@ -45,6 +46,7 @@ contract MinerCards is ERC1155 {
         uint256 _id,
         uint256 _quantity
     ) public onlyOwner {
+        console.log("TOKEN TYPE: ", _id);
         require(
             validateTokenType(_id) == true,
             "MinerCards.mint: Invalid Token Type."

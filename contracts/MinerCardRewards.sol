@@ -4,6 +4,7 @@ pragma solidity ^0.6.0;
 
 import "./MinerCards.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@nomiclabs/buidler/console.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/Initializable.sol";
 
 contract MinerCardRewards is Initializable {
@@ -58,6 +59,7 @@ contract MinerCardRewards is Initializable {
         uint256 _time,
         uint256 _rate
     ) public initializer {
+        console.log("Initializing   ");
         _releaseTime = _time;
         rate = _rate;
         minerCards = MinerCards(_minerCards);
@@ -77,6 +79,7 @@ contract MinerCardRewards is Initializable {
         uint256 _lockAmount
     ) public {
         uint256 balance = minerCards.balanceOf(_account, _id);
+        console.log("MinerCards BALANCE: ", balance);
         require(
             balance > 0,
             "MinerCardRewards: Account has insufficient miner card token to lock funds."
@@ -95,6 +98,11 @@ contract MinerCardRewards is Initializable {
         unLockDates[_account] = block.timestamp.add(_releaseTime);
         _t = unLockDates[_account];
         emit LockFund(_account, _id, _lockAmount);
+        console.log(
+            "Funds locked at time: ",
+            unLockDates[_account],
+            _releaseTime
+        );
     }
 
     /**
@@ -120,13 +128,20 @@ contract MinerCardRewards is Initializable {
      * Emits `Withdraw` event.
      */
     function withdraw() public {
-        require(
-            unLockDates[msg.sender] != 0 && balances[msg.sender] != 0,
-            "MinerCardRewards: no funds locked."
+        console.log("Withdrawing...");
+        console.log(
+            "TIME: ",
+            block.timestamp,
+            unLockDates[msg.sender],
+            block.timestamp >= unLockDates[msg.sender]
         );
         require(
             block.timestamp >= unLockDates[msg.sender],
             "MinerCardRewards: current time is before release time."
+        );
+        require(
+            unLockDates[msg.sender] != 0 && balances[msg.sender] != 0,
+            "MinerCardRewards: no funds locked."
         );
 
         uint256 _balance = balances[msg.sender];
@@ -138,6 +153,7 @@ contract MinerCardRewards is Initializable {
         token.transfer(msg.sender, _balance.add(dividends));
         balances[msg.sender] = balances[msg.sender].sub(_balance);
         emit Withdraw(msg.sender, _balance, dividends);
+        console.log("Funds Withdrawn");
     }
 
     /**
