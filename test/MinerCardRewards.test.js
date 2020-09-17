@@ -1,4 +1,4 @@
-const { accounts, contract } = require("@openzeppelin/test-environment");
+const { accounts, contract, web3 } = require("@openzeppelin/test-environment");
 const { expect } = require("chai");
 const {
   expectRevert,
@@ -76,12 +76,16 @@ describe("MinerCardRewards", function() {
 
   describe("withdraw()", function() {
     it("should withdraw funds", async () => {
-      releaseTime = time.duration.seconds(5).toString();
+      releaseTime = time.duration.days(90).toNumber();
       initialize(releaseTime);
 
       await lockFunds();
       console.log("ADDRESS:   ", addr1._address);
-
+      //await time.increase((await time.latest()).add(time.duration.days(90)));
+      const t = (await time.latest()).add(time.duration.days(90));
+      console.log("ONE: ", t.toNumber());
+      ethers.provider.send("evm_increaseTime", [t.toNumber()]); // add 60 seconds
+      ethers.provider.send("evm_mine"); // mine the next block
       const receipt = await minerCardRewards.connect(addr1).withdraw();
       expectEvent(receipt, "Withdraw", {
         _account: addr1,

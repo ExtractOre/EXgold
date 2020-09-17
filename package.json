@@ -18,10 +18,13 @@
   "devDependencies": {
     "@nomiclabs/buidler": "^1.4.6",
     "@nomiclabs/buidler-ethers": "^2.0.0",
+    "@nomiclabs/buidler-waffle": "^2.1.0",
     "@openzeppelin/buidler-upgrades": "^1.0.2",
     "@openzeppelin/test-environment": "^0.1.4",
     "@truffle/hdwallet-provider": "^1.0.44",
+    "ethereum-waffle": "^3.0.0",
     "ethers": "^5.0.13",
+    "ganache-core": "^2.11.3",
     "husky": "^4.3.0",
     "openzeppelin-test-helpers": "^0.5.1"
   },
