@@ -13,7 +13,6 @@ contract MinerCardRewards is Initializable {
     MinerCards private minerCards;
     uint256 private _releaseTime;
     uint256 private rate;
-    uint256 public _t;
 
     // mapping from address to time
     mapping(address => uint256) private unLockDates;
@@ -93,7 +92,6 @@ contract MinerCardRewards is Initializable {
         token.transferFrom(_account, address(this), _lockAmount);
         balances[_account] = balances[_account].add(_lockAmount);
         unLockDates[_account] = block.timestamp.add(_releaseTime);
-        _t = unLockDates[_account];
         emit LockFund(_account, _id, _lockAmount);
     }
 
@@ -170,9 +168,5 @@ contract MinerCardRewards is Initializable {
     // return `_account` balance locked in contract.
     function balance(address _account) public view returns (uint256) {
         return balances[_account];
-    }
-
-    function tt() public view returns (uint256) {
-        return _t;
     }
 }

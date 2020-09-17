@@ -1,4 +1,4 @@
-const { accounts, contract } = require("@openzeppelin/test-environment");
+const { accounts, contract, web3 } = require("@openzeppelin/test-environment");
 const { expect } = require("chai");
 const {
   expectRevert,
@@ -36,6 +36,22 @@ describe("MinerCardRewards", function() {
       releaseTime,
       rate
     );
+  };
+
+  async function timeIncreaseTo(duration) {
+    /* console.log("DATE: ", new Date().getMilliseconds());
+    const delay = 1000 - new Date().getMilliseconds();
+    await new Promise((resolve) => setTimeout(resolve, delay)); */
+    await time.increaseTo(seconds);
+  }
+
+  const advanceBlockAtTime = async (time) => {
+    await web3.currentProvider.send({
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      params: [time],
+      id: new Date().getTime(),
+    });
   };
 
   const mintNft = async (owner, amount, ID) => {
@@ -188,19 +204,21 @@ describe("MinerCardRewards", function() {
 
   describe("withdraw()", function() {
     it("should withdraw funds", async () => {
-      releaseTime = time.duration.seconds(1);
+      releaseTime = time.duration.days(90);
       initialize(releaseTime);
       await lockFunds();
 
-      //await time.increaseTo(releaseTime.add(time.duration.days(10)));
+      // Skip 1 day
+      //await timeIncreaseTo((await time.latest()).add(time.duration.days(100)));
 
-      console.log(
-        (await minerCardRewards.accountReleaseTime(accounts[1])).toString(),
-        (await minerCardRewards.releaseTime()).toString()
-      );
-      console.log(
-        (await minerCardRewards.accountReleaseTime(accounts[1])) > releaseTime
-      );
+      // Skip 1 day
+      await time.increase((await time.latest()).add(time.duration.years(100)));
+
+      // Skip 1 day
+      /* await timeIncreaseTo(
+        (await time.latest()).add(time.duration.years(1)).subn(1)
+      ); */
+
       const receipt = await minerCardRewards.withdraw({ from: accounts[1] });
       expectEvent(receipt, "Withdraw", {
         _account: accounts[1],
