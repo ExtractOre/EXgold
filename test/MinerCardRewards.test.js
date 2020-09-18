@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const { expectRevert, BN, time } = require("openzeppelin-test-helpers");
+const { expectRevert, time } = require("openzeppelin-test-helpers");
 
 require("chai").should;
 
