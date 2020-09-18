@@ -351,8 +351,8 @@
   },
   "MinerCardRewards": {
     "version": {
-      "withMetadata": "10ec59232b417f4b78071ba43b7c0722b58ffef8d5eccbaba68ffb7afc03fa3c",
-      "withoutMetadata": "d8a2a0f0b6559186625b24216715aaa2cbb3acc7805fbf7041f86166bb751ecb"
+      "withMetadata": "5251e3abc6ab49d065bfd86faf800064e0895fec69678643db223ae64f6c543c",
+      "withoutMetadata": "20666662455732cfc69ee0eae8933c013bf1769d6e15dd441125c8840b8beb19"
     },
     "inherit": [
       "Initializable"
@@ -372,7 +372,7 @@
         {
           "contract": "MinerCardRewards",
           "label": "minerCards",
-          "type": "t_contract(MinerCards)11369",
+          "type": "t_contract(MinerCards)11426",
           "src": "contracts/MinerCardRewards.sol:14"
         },
         {
@@ -398,13 +398,19 @@
           "label": "balances",
           "type": "t_mapping(t_address,t_uint256)",
           "src": "contracts/MinerCardRewards.sol:22"
+        },
+        {
+          "contract": "MinerCardRewards",
+          "label": "_lockedFunds",
+          "type": "t_uint256",
+          "src": "contracts/MinerCardRewards.sol:25"
         }
       ],
       "types": {
         "t_contract(IERC20)10534": {
           "label": "contract IERC20"
         },
-        "t_contract(MinerCards)11369": {
+        "t_contract(MinerCards)11426": {
           "label": "contract MinerCards"
         },
         "t_uint256": {

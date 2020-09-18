@@ -4,12 +4,12 @@ const { expectRevert, BN, time } = require("openzeppelin-test-helpers");
 require("chai").should;
 
 describe("MinerCardRewards", function() {
-  const ID = 100;
+  const ID = 250;
   const decimals = 10 ** 6;
   const rate = 5;
   const approveAmount = 50 * decimals;
 
-  const transferAmount = 22000 * decimals;
+  const transferAmount = 10000 * decimals;
 
   let releaseTime;
   let MinerCardRewards, minerCardRewards;
@@ -24,6 +24,10 @@ describe("MinerCardRewards", function() {
       releaseTime,
       rate
     );
+  };
+
+  const transferExgoldToRewardsContract = async () => {
+    await exgold.transfer(minerCardRewards.address, 4000000 * decimals);
   };
 
   const lockFunds = async () => {
@@ -68,13 +72,13 @@ describe("MinerCardRewards", function() {
     exgold = await Exgold.deploy();
 
     await exgold.initialize("EXgold", "EXG", 6, 5000000);
-    await exgold.transfer(minerCardRewards.address, 4000000 * decimals);
   });
 
   describe("initialize(address, address, uint256, uint256)", function() {
     it("should initialize contract once with correct values", async () => {
       releaseTime = time.duration.days(90).toNumber();
       initialize(releaseTime);
+      await transferExgoldToRewardsContract();
 
       const t = await minerCardRewards.releaseTime();
       const r = await minerCardRewards.getRate();
@@ -87,6 +91,7 @@ describe("MinerCardRewards", function() {
 
       // first call
       initialize(releaseTime);
+      await transferExgoldToRewardsContract();
 
       await expectRevert(
         minerCardRewards.initialize(
@@ -103,8 +108,8 @@ describe("MinerCardRewards", function() {
   describe("lockFunds(address, uint256, uint256)", function() {
     it("should lock funds", async () => {
       releaseTime = time.duration.days(90).toNumber();
-
       initialize(releaseTime);
+      await transferExgoldToRewardsContract();
 
       await lockFunds();
       const balance = await minerCardRewards.balance(addr1._address);
@@ -115,19 +120,19 @@ describe("MinerCardRewards", function() {
   describe("release()", function() {
     it("should revert if no funds locked", async () => {
       releaseTime = time.duration.days(90).toNumber();
-
       initialize(releaseTime);
+      await transferExgoldToRewardsContract();
 
       await expectRevert(
         minerCardRewards.connect(addr1).release(),
-        "MinerCardRewards: no funds locked."
+        "MinerCardRewards: no funds locked"
       );
     });
 
     it("should release locked funds", async () => {
       releaseTime = time.duration.days(90).toNumber();
-
       initialize(releaseTime);
+      await transferExgoldToRewardsContract();
       await lockFunds();
 
       let balance = await exgold.balanceOf(addr1._address);
@@ -143,6 +148,7 @@ describe("MinerCardRewards", function() {
     it("should withdraw funds", async () => {
       releaseTime = time.duration.days(90).toNumber();
       initialize(releaseTime);
+      await transferExgoldToRewardsContract();
       await lockFunds();
 
       const t = (await time.latest()).add(time.duration.days(90));
@@ -154,6 +160,43 @@ describe("MinerCardRewards", function() {
       const rate = await minerCardRewards.getRate();
       const dividends = (rate / 100) * approveAmount;
       expect(dividends + transferAmount).to.equals(bal.toNumber());
+    });
+
+    it("should revrt if current time is before release time", async () => {
+      releaseTime = time.duration.days(90).toNumber();
+      initialize(releaseTime);
+      await lockFunds();
+      await transferExgoldToRewardsContract();
+
+      await expectRevert(
+        minerCardRewards.connect(addr1).withdraw(),
+        "MinerCardRewards: current time is before release time"
+      );
+    });
+
+    it("should revrt if no funds locked", async () => {
+      releaseTime = time.duration.days(90).toNumber();
+      initialize(releaseTime);
+      await transferExgoldToRewardsContract();
+
+      await expectRevert(
+        minerCardRewards.connect(addr1).withdraw(),
+        "MinerCardRewards: no funds locked"
+      );
+    });
+
+    it("should revrt if insufficient funds to pay dividends", async () => {
+      releaseTime = time.duration.days(90).toNumber();
+      initialize(releaseTime);
+      await lockFunds();
+      const t = (await time.latest()).add(time.duration.days(90));
+      ethers.provider.send("evm_increaseTime", [t.toNumber()]); // add 90+ days
+      ethers.provider.send("evm_mine"); // mine the next block
+
+      await expectRevert(
+        minerCardRewards.connect(addr1).withdraw(),
+        "MinerCardRewards: Insufficient funds to pay dividends"
+      );
     });
   });
 });

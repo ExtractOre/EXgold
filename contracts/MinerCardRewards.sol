@@ -21,11 +21,8 @@ contract MinerCardRewards is Initializable {
     // mapping from address to lockAmount
     mapping(address => uint256) private balances;
 
-    /* uint256 private constant MINERCARD_1 = 25;
-    uint256 private constant MINERCARD_2 = 50;
-    uint256 private constant MINERCARD_3 = 100;
-    uint256 private constant MINERCARD_4 = 250;
-    uint256 private constant MINERCARD_5 = 1000; */
+    // total amount locked
+    uint256 private _lockedFunds;
 
     // Emitted when funds is locked.
     event LockFund(
@@ -79,16 +76,17 @@ contract MinerCardRewards is Initializable {
         uint256 balance = minerCards.balanceOf(_account, _id);
         require(
             balance > 0,
-            "MinerCardRewards: Account has insufficient miner card token to lock funds."
+            "MinerCardRewards: Account has insufficient miner card token to lock funds"
         );
         uint256 allowance = token.allowance(_account, address(this));
         require(
             allowance >= _lockAmount,
-            "MinerCardRewards: lockAmount exceeds allowance."
+            "MinerCardRewards: lockAmount exceeds allowance"
         );
 
         token.transferFrom(_account, address(this), _lockAmount);
         balances[_account] = balances[_account].add(_lockAmount);
+        _lockedFunds = _lockedFunds.add(_lockAmount);
         unLockDates[_account] = block.timestamp.add(_releaseTime);
         emit LockFund(_account, _id, _lockAmount);
     }
@@ -102,10 +100,11 @@ contract MinerCardRewards is Initializable {
     function release() public {
         require(
             unLockDates[msg.sender] != 0 && balances[msg.sender] != 0,
-            "MinerCardRewards: no funds locked."
+            "MinerCardRewards: no funds locked"
         );
         uint256 balance = balances[msg.sender];
         token.transfer(msg.sender, balance);
+        _lockedFunds = _lockedFunds.sub(balance);
         balances[msg.sender] = balances[msg.sender].sub(balance);
         emit Release(msg.sender, balance);
     }
@@ -118,21 +117,22 @@ contract MinerCardRewards is Initializable {
     function withdraw() public {
         require(
             unLockDates[msg.sender] != 0 && balances[msg.sender] != 0,
-            "MinerCardRewards: no funds locked."
+            "MinerCardRewards: no funds locked"
         );
         require(
             block.timestamp >= unLockDates[msg.sender],
-            "MinerCardRewards: current time is before release time."
+            "MinerCardRewards: current time is before release time"
         );
 
         uint256 _balance = balances[msg.sender];
         uint256 dividends = calcDividends(_balance);
         require(
-            token.balanceOf(address(this)) >= dividends,
+            sufficientFunds(dividends) == true,
             "MinerCardRewards: Insufficient funds to pay dividends"
         );
         token.transfer(msg.sender, _balance.add(dividends));
         balances[msg.sender] = balances[msg.sender].sub(_balance);
+        _lockedFunds = _lockedFunds.sub(_balance);
         emit Withdraw(msg.sender, _balance, dividends);
     }
 
@@ -162,5 +162,15 @@ contract MinerCardRewards is Initializable {
 
     function balance(address _account) public view returns (uint256) {
         return balances[_account];
+    }
+
+    function sufficientFunds(uint256 _dividends) private view returns (bool) {
+        uint256 _balance = token.balanceOf(address(this));
+        uint256 r = _balance.sub(_lockedFunds);
+        if (r > 0 && r >= _dividends) {
+            return true;
+        }
+
+        return false;
     }
 }
