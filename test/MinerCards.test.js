@@ -1,78 +1,60 @@
-const { accounts, contract } = require("@openzeppelin/test-environment");
 const { expect } = require("chai");
-const { expectRevert, BN, constants } = require("openzeppelin-test-helpers");
+const { expectRevert, constants } = require("openzeppelin-test-helpers");
 const { ZERO_ADDRESS } = constants;
 
 require("chai").should;
 
-const MinerCards = contract.fromArtifact("MinerCards");
-
 describe("MinerCards", function() {
-  const mintAmount = new BN(5000);
-  const tokenID = new BN(100);
-  let tokenBatchIds = [
-    new BN(25),
-    new BN(50),
-    new BN(100),
-    new BN(250),
-    new BN(1000),
-  ];
-  const mintAmounts = [
-    new BN(5000),
-    new BN(10000),
-    new BN(42195),
-    new BN(2000),
-    new BN(12000),
-  ];
+  const mintAmount = 5000;
+  const tokenID = 100;
+  let tokenBatchIds = [25, 50, 100, 250, 1000];
+  const mintAmounts = [5000, 10000, 42195, 2000, 12000];
 
-  let minerCards;
+  let MinerCards, minerCards;
+  let owner, addr1;
+  let ownerAddress, addr1Address;
 
   beforeEach(async () => {
-    minerCards = await MinerCards.new({ from: accounts[0] });
+    [owner, addr1] = await ethers.getSigners();
+    ownerAddress = owner._address;
+    addr1Address = addr1._address;
+
+    MinerCards = await ethers.getContractFactory("MinerCards");
+    minerCards = await MinerCards.deploy();
   });
 
   describe("mint(address, uint256, uint256)", function() {
     it("should mint tokens", async () => {
-      await minerCards.mint(accounts[0], tokenID, mintAmount, {
-        from: accounts[0],
-      });
+      await minerCards.mint(ownerAddress, tokenID, mintAmount);
 
-      const balance = await minerCards.balanceOf(accounts[0], tokenID);
-      expect(balance.toString()).to.equal(mintAmount.toString());
+      const balance = await minerCards.balanceOf(ownerAddress, tokenID);
+      expect(balance).to.equal(mintAmount);
     });
 
-    it("should update token supply", async () => {
-      await minerCards.mint(accounts[0], tokenID, mintAmount, {
-        from: accounts[0],
-      });
+    it("should get token supply", async () => {
+      await minerCards.mint(ownerAddress, tokenID, mintAmount);
 
       const totalSupply = await minerCards.totalSupply(tokenID);
-      expect(totalSupply.toString()).to.equal(mintAmount.toString());
+      expect(totalSupply).to.equal(mintAmount);
     });
 
     it("should revert when mint is called by unauthorized sender", async () => {
       await expectRevert(
-        minerCards.mint(accounts[0], tokenID, mintAmount, {
-          from: accounts[1],
-        }),
+        minerCards.connect(addr1).mint(ownerAddress, tokenID, mintAmount),
         "Sender is not authorized!"
       );
     });
 
     it("should revert when mint is called with a null destination address", async () => {
       await expectRevert(
-        minerCards.mint(ZERO_ADDRESS, tokenID, mintAmount, {
-          from: accounts[0],
-        }),
+        minerCards.mint(ZERO_ADDRESS, tokenID, mintAmount),
         "ERC1155: mint to the zero address"
       );
     });
 
     it("should revert when mint is called with invalid token type", async () => {
       await expectRevert(
-        minerCards.mint(accounts[0], new BN(7), mintAmount, {
-          from: accounts[0],
-        }),
+        minerCards.mint(ownerAddress, 7, mintAmount),
         "MinerCards.mint: Invalid Token Type."
       );
     });
@@ -80,42 +62,38 @@ describe("MinerCards", function() {
 
   describe("_mintBatch(address, uint256[] memory, uint256[] memory", function() {
     it("should mint tokens in batch", async () => {
-      await minerCards.mintBatch(accounts[0], tokenBatchIds, mintAmounts, {
-        from: accounts[0],
-      });
+      await minerCards.mintBatch(ownerAddress, tokenBatchIds, mintAmounts);
 
       const balance_1 = await minerCards.balanceOf(
-        accounts[0],
+        ownerAddress,
         tokenBatchIds[0]
       );
       const balance_2 = await minerCards.balanceOf(
-        accounts[0],
+        ownerAddress,
         tokenBatchIds[1]
       );
       const balance_3 = await minerCards.balanceOf(
-        accounts[0],
+        ownerAddress,
         tokenBatchIds[2]
       );
       const balance_4 = await minerCards.balanceOf(
-        accounts[0],
+        ownerAddress,
         tokenBatchIds[3]
       );
       const balance_5 = await minerCards.balanceOf(
-        accounts[0],
+        ownerAddress,
         tokenBatchIds[4]
       );
 
-      expect(balance_1.toString()).to.equal(mintAmounts[0].toString());
-      expect(balance_2.toString()).to.equal(mintAmounts[1].toString());
-      expect(balance_3.toString()).to.equal(mintAmounts[2].toString());
-      expect(balance_4.toString()).to.equal(mintAmounts[3].toString());
-      expect(balance_5.toString()).to.equal(mintAmounts[4].toString());
+      expect(balance_1).to.equal(mintAmounts[0]);
+      expect(balance_2).to.equal(mintAmounts[1]);
+      expect(balance_3).to.equal(mintAmounts[2]);
+      expect(balance_4).to.equal(mintAmounts[3]);
+      expect(balance_5).to.equal(mintAmounts[4]);
     });
 
     it("should update token supply", async () => {
-      await minerCards.mintBatch(accounts[0], tokenBatchIds, mintAmounts, {
-        from: accounts[0],
-      });
+      await minerCards.mintBatch(ownerAddress, tokenBatchIds, mintAmounts);
 
       const totalSupply_1 = await minerCards.totalSupply(tokenBatchIds[0]);
       const totalSupply_2 = await minerCards.totalSupply(tokenBatchIds[1]);
@@ -123,47 +101,41 @@ describe("MinerCards", function() {
       const totalSupply_4 = await minerCards.totalSupply(tokenBatchIds[3]);
       const totalSupply_5 = await minerCards.totalSupply(tokenBatchIds[4]);
 
-      expect(totalSupply_1.toString()).to.equal(mintAmounts[0].toString());
-      expect(totalSupply_2.toString()).to.equal(mintAmounts[1].toString());
-      expect(totalSupply_3.toString()).to.equal(mintAmounts[2].toString());
-      expect(totalSupply_4.toString()).to.equal(mintAmounts[3].toString());
-      expect(totalSupply_5.toString()).to.equal(mintAmounts[4].toString());
+      expect(totalSupply_1).to.equal(mintAmounts[0]);
+      expect(totalSupply_2).to.equal(mintAmounts[1]);
+      expect(totalSupply_3).to.equal(mintAmounts[2]);
+      expect(totalSupply_4).to.equal(mintAmounts[3]);
+      expect(totalSupply_5).to.equal(mintAmounts[4]);
     });
 
     it("should revert when mintBatch is called with a null destination address", async () => {
       await expectRevert(
-        minerCards.mintBatch(ZERO_ADDRESS, tokenBatchIds, mintAmounts, {
-          from: accounts[0],
-        }),
-        "ERC1155: mint to the zero address."
+        minerCards.mintBatch(ZERO_ADDRESS, tokenBatchIds, mintAmounts),
+        "ERC1155: mint to the zero address"
       );
     });
 
     it("should revert if length of inputs do not match", async () => {
       await expectRevert(
-        minerCards.mintBatch(accounts[0], tokenBatchIds, mintAmounts.slice(1), {
-          from: accounts[0],
-        }),
-        "ERC1155: ids and amounts length mismatch."
+        minerCards.mintBatch(ownerAddress, tokenBatchIds, mintAmounts.slice(1)),
+        "ERC1155: ids and amounts length mismatch"
       );
     });
 
     it("should revert if mintBatch is called by unauthorized sender", async () => {
       await expectRevert(
-        minerCards.mintBatch(accounts[0], tokenBatchIds, mintAmounts, {
-          from: accounts[1],
-        }),
+        minerCards
+          .connect(addr1)
+          .mintBatch(addr1Address, tokenBatchIds, mintAmounts),
         "Sender is not authorized!"
       );
     });
 
     it("should revert when mintBatch is called with invalid token type", async () => {
-      tokenBatchIds[tokenBatchIds.length - 1] = new BN(10);
+      tokenBatchIds[tokenBatchIds.length - 1] = 10;
 
       await expectRevert(
-        minerCards.mintBatch(accounts[0], tokenBatchIds, mintAmounts.slice(1), {
-          from: accounts[0],
-        }),
+        minerCards.mintBatch(ownerAddress, tokenBatchIds, mintAmounts.slice(1)),
         "MinerCards.mintBatch: Invalid Token Type."
       );
     });
@@ -171,24 +143,21 @@ describe("MinerCards", function() {
 
   describe("safeTransferFrom(address, address, uint256, uint256, bytes calldata)", function() {
     it("should make a safeTransfer", async () => {
-      const value = new BN(1000);
+      const value = 1000;
       const ID = tokenBatchIds[0];
 
-      await minerCards.mint(accounts[0], ID, mintAmount, {
-        from: accounts[0],
-      });
+      await minerCards.mint(ownerAddress, ID, mintAmount);
 
       await minerCards.safeTransferFrom(
-        accounts[0],
-        accounts[1],
+        ownerAddress,
+        addr1Address,
         ID,
         value,
-        "0x0",
-        { from: accounts[0] }
+        "0x00"
       );
 
-      const balance = await minerCards.balanceOf(accounts[1], ID);
-      expect(balance.toString()).to.equal(value.toString());
+      const balance = await minerCards.balanceOf(addr1Address, ID);
+      expect(balance).to.equal(value);
     });
   });
 });

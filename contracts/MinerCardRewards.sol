@@ -3,6 +3,7 @@
 pragma solidity ^0.6.0;
 
 import "./MinerCards.sol";
+import "@nomiclabs/buidler/console.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/Initializable.sol";
 
@@ -85,10 +86,7 @@ contract MinerCardRewards is Initializable {
             allowance >= _lockAmount,
             "MinerCardRewards: lockAmount exceeds allowance."
         );
-        require(
-            _id == _lockAmount,
-            "MinerCardRewards: id not equal to lock amount."
-        );
+
         token.transferFrom(_account, address(this), _lockAmount);
         balances[_account] = balances[_account].add(_lockAmount);
         unLockDates[_account] = block.timestamp.add(_releaseTime);
@@ -142,21 +140,18 @@ contract MinerCardRewards is Initializable {
      * @dev calculate dividends for `_lockAmount`
      */
     function calcDividends(uint256 _lockAmount) private view returns (uint256) {
-        uint256 a = rate.div(100);
-        return a.mul(_lockAmount);
+        uint256 r = rate.mul(_lockAmount);
+        return r.div(100);
     }
 
-    // return release time
     function releaseTime() public view returns (uint256) {
         return _releaseTime;
     }
 
-    // return rate
     function getRate() public view returns (uint256) {
         return rate;
     }
 
-    // get the time at which funds were locked for `_account`
     function accountReleaseTime(address _account)
         public
         view
@@ -165,7 +160,6 @@ contract MinerCardRewards is Initializable {
         return unLockDates[_account];
     }
 
-    // return `_account` balance locked in contract.
     function balance(address _account) public view returns (uint256) {
         return balances[_account];
     }
