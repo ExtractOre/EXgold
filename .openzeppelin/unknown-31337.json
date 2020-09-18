@@ -1,0 +1,97 @@
+{
+  "manifestVersion": "3.0",
+  "impls": {
+    "20666662455732cfc69ee0eae8933c013bf1769d6e15dd441125c8840b8beb19": {
+      "address": "0xD6C850aeBFDC46D7F4c207e445cC0d6B0919BDBe",
+      "txHash": "0x123864a874571e5ceb6294da254cc878eaf81148487e3fcb82555ac84047a1eb",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-ethereum-package/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-ethereum-package/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin/contracts-ethereum-package/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "MinerCardRewards",
+            "label": "token",
+            "type": "t_contract(IERC20)10534",
+            "src": "contracts/MinerCardRewards.sol:13"
+          },
+          {
+            "contract": "MinerCardRewards",
+            "label": "minerCards",
+            "type": "t_contract(MinerCards)11426",
+            "src": "contracts/MinerCardRewards.sol:14"
+          },
+          {
+            "contract": "MinerCardRewards",
+            "label": "_releaseTime",
+            "type": "t_uint256",
+            "src": "contracts/MinerCardRewards.sol:15"
+          },
+          {
+            "contract": "MinerCardRewards",
+            "label": "rate",
+            "type": "t_uint256",
+            "src": "contracts/MinerCardRewards.sol:16"
+          },
+          {
+            "contract": "MinerCardRewards",
+            "label": "unLockDates",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "contracts/MinerCardRewards.sol:19"
+          },
+          {
+            "contract": "MinerCardRewards",
+            "label": "balances",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "contracts/MinerCardRewards.sol:22"
+          },
+          {
+            "contract": "MinerCardRewards",
+            "label": "_lockedFunds",
+            "type": "t_uint256",
+            "src": "contracts/MinerCardRewards.sol:25"
+          }
+        ],
+        "types": {
+          "t_contract(IERC20)10534": {
+            "label": "contract IERC20"
+          },
+          "t_contract(MinerCards)11426": {
+            "label": "contract MinerCards"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    }
+  },
+  "admin": {
+    "address": "0x8B5B7a6055E54a36fF574bbE40cf2eA68d5554b3",
+    "txHash": "0xc3c63f1698db3a5953ae5fec653da6b7b5dc47ac2331f2d3b51da89597a33f01"
+  }
+}
