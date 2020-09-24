@@ -24,38 +24,24 @@ describe("MinerCards", function() {
   });
 
   describe("mint(address, uint256, uint256)", function() {
-    it("should mint tokens", async () => {
-      await minerCards.mint(ownerAddress, tokenID, mintAmount);
+    it("should mint 1 NFT", async () => {
+      await minerCards.mint(ownerAddress, tokenID);
 
       const balance = await minerCards.balanceOf(ownerAddress, tokenID);
-      expect(balance).to.equal(mintAmount);
-    });
-
-    it("should get token supply", async () => {
-      await minerCards.mint(ownerAddress, tokenID, mintAmount);
-
-      const totalSupply = await minerCards.totalSupply(tokenID);
-      expect(totalSupply).to.equal(mintAmount);
+      expect(balance).to.equal(1);
     });
 
     it("should revert when mint is called by unauthorized sender", async () => {
       await expectRevert(
-        minerCards.connect(addr1).mint(ownerAddress, tokenID, mintAmount),
+        minerCards.connect(addr1).mint(ownerAddress, tokenID),
         "Sender is not authorized!"
       );
     });
 
     it("should revert when mint is called with a null destination address", async () => {
       await expectRevert(
-        minerCards.mint(ZERO_ADDRESS, tokenID, mintAmount),
+        minerCards.mint(ZERO_ADDRESS, tokenID),
         "ERC1155: mint to the zero address"
-      );
-    });
-
-    it("should revert when mint is called with invalid token type", async () => {
-      await expectRevert(
-        minerCards.mint(ownerAddress, 7, mintAmount),
-        "MinerCards.mint: Invalid Token Type."
       );
     });
   });
@@ -143,21 +129,28 @@ describe("MinerCards", function() {
 
   describe("safeTransferFrom(address, address, uint256, uint256, bytes calldata)", function() {
     it("should make a safeTransfer", async () => {
-      const value = 1000;
       const ID = tokenBatchIds[0];
 
-      await minerCards.mint(ownerAddress, ID, mintAmount);
+      await minerCards.mint(ownerAddress, ID);
 
       await minerCards.safeTransferFrom(
         ownerAddress,
         addr1Address,
         ID,
-        value,
+        1,
         "0x00"
       );
 
       const balance = await minerCards.balanceOf(addr1Address, ID);
-      expect(balance).to.equal(value);
+      expect(balance).to.equal(1);
+    });
+  });
+
+  describe("add admin", function() {
+    it("should add an admin", async () => {
+      await minerCards.addAdmin(addr1._address);
+      const isAdmin = await minerCards.admin(addr1._address);
+      expect(isAdmin).to.equal(true);
     });
   });
 });

@@ -8,16 +8,26 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 contract MinerCards is ERC1155 {
     using SafeMath for uint256;
 
+    address private owner;
+
     uint256 public constant MINERCARD_1 = 25;
     uint256 public constant MINERCARD_2 = 50;
     uint256 public constant MINERCARD_3 = 100;
     uint256 public constant MINERCARD_4 = 250;
     uint256 public constant MINERCARD_5 = 1000;
 
-    address private owner;
+    mapping(address => bool) public _admins;
 
     // Mapping from token ID to total supply
     mapping(uint256 => uint256) public _totalSupply;
+
+    /**
+     * @dev Require msg.sender to be an admin
+     */
+    modifier isAdmin() {
+        require(_admins[msg.sender] == true, "Sender is not authorized!");
+        _;
+    }
 
     /**
      * @dev Require msg.sender to be an admin
@@ -29,6 +39,7 @@ contract MinerCards is ERC1155 {
 
     constructor() public ERC1155("") {
         owner = msg.sender;
+        _admins[msg.sender] = true;
     }
 
     /**
@@ -40,22 +51,30 @@ contract MinerCards is ERC1155 {
      * - `_id`          must be between 0 and 4.
      * - `_quantity`    quantity of tokens to mint.
      */
-    function mint(
+    function mint(address _account, uint256 _id) public isAdmin {
+        _mint(_account, _id, 1, "");
+    }
+
+    /** @dev same as mint, but it mints multiple NFTs of same ID to `_account`
+     *
+     * - `_account`      cannot be the zero address.
+     * - `_id`          must be between 0 and 4.
+     * - `_quantity`    quantity of tokens to mint.
+     */
+    function mintMultiple(
         address _account,
         uint256 _id,
         uint256 _quantity
-    ) public onlyOwner {
-        require(
-            validateTokenType(_id) == true,
-            "MinerCards.mint: Invalid Token Type."
-        );
-
+    ) public isAdmin {
         _mint(_account, _id, _quantity, "");
-        _totalSupply[_id] = _totalSupply[_id].add(_quantity);
     }
 
-    function getowner() public view returns (address) {
-        return owner;
+    function admin(address _admin) public view returns (bool) {
+        return _admins[_admin];
+    }
+
+    function addAdmin(address _address) public onlyOwner {
+        _admins[_address] = true;
     }
 
     /**
@@ -71,7 +90,7 @@ contract MinerCards is ERC1155 {
         address _account,
         uint256[] memory _ids,
         uint256[] memory _amounts
-    ) public onlyOwner {
+    ) public isAdmin {
         for (uint256 i = 0; i < _ids.length; i++) {
             require(
                 validateTokenType(_ids[i]) == true,
