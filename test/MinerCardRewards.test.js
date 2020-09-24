@@ -1,5 +1,4 @@
 const { expect } = require("chai");
-const { web3 } = require("@openzeppelin/test-environment");
 
 const { expectRevert, time } = require("openzeppelin-test-helpers");
 
@@ -20,7 +19,7 @@ describe("MinerCardRewards", function() {
   let MinerCardRewards, minerCardRewards;
   let MinerCards, minerCards;
   let Exgold, exgold;
-  let owner, addr1;
+  let owner, addr1, addr2;
 
   const initialize = async (releaseTime) => {
     await minerCardRewards.initialize(
@@ -74,34 +73,10 @@ describe("MinerCardRewards", function() {
     for (const [key, func] of Object.entries(funcObjs)) {
       func();
     }
-    /*  // transfer some Exgold tokens to accounts[1]
-    await exgold.transfer(addr1._address, transferAmount);
-
-    // mint new MinerCard token of ID.
-    await minerCards.mintMultiple(owner._address, ID, 5000);
-
-    // set approval for MinerCards Contract
-    await minerCards
-      .connect(addr1)
-      .setApprovalForAll(minerCardRewards.address, true);
-
-    // transfer 1 MinerCard token (ID = 25) to accounts[1]
-    await minerCards.safeTransferFrom(
-      owner._address,
-      addr1._address,
-      ID,
-      1,
-      "0x00"
-    );
-
-    // accounts[1] sets approval for MinerCardRewards contract
-    await exgold
-      .connect(addr1)
-      .approve(minerCardRewards.address, approveAmount); */
   };
 
   beforeEach(async () => {
-    [owner, addr1] = await ethers.getSigners();
+    [owner, addr1, addr2] = await ethers.getSigners();
 
     MinerCardRewards = await ethers.getContractFactory("MinerCardRewards");
     MinerCards = await ethers.getContractFactory("MinerCards");
@@ -266,6 +241,28 @@ describe("MinerCardRewards", function() {
       );
     });
 
+    it("should revrt if account has no ERC-721", async () => {
+      releaseTime = time.duration.days(90).toNumber();
+      initialize(releaseTime);
+      await transferExgoldToRewardsContract();
+      const funcs = {
+        transfer,
+        mintMultiple,
+        setApprovalForAll,
+        safeTransferFrom,
+        approve,
+      };
+
+      await run(funcs);
+      await minerCardRewards.connect(addr1).lockFunds(ID, approveAmount);
+      const id = await minerCardRewards.certToken(addr1._address, ID);
+
+      await expectRevert(
+        minerCardRewards.connect(addr2).release(id),
+        "MinerCardRewards: Account has no cert to withdraw funds + dividends"
+      );
+    });
+
     it("should release locked funds", async () => {
       releaseTime = time.duration.days(90).toNumber();
       initialize(releaseTime);
@@ -285,7 +282,9 @@ describe("MinerCardRewards", function() {
       await minerCardRewards.connect(addr1).release(id);
       const balance = await exgold.balanceOf(addr1._address);
       const balERC1155 = await minerCards.balanceOf(addr1._address, ID);
+      const idlf = await minerCardRewards.idlf(id);
 
+      expect(idlf).to.equal(0);
       expect(balance).to.equal(transferAmount);
       expect(balERC1155).to.equal(1);
     });
@@ -320,6 +319,27 @@ describe("MinerCardRewards", function() {
       expect(dividends + transferAmount).to.equals(bal.toNumber());
     });
 
+    it("should revrt if account has no ERC-721", async () => {
+      releaseTime = time.duration.days(90).toNumber();
+      initialize(releaseTime);
+      await transferExgoldToRewardsContract();
+      const funcs = {
+        transfer,
+        mintMultiple,
+        setApprovalForAll,
+        safeTransferFrom,
+        approve,
+      };
+
+      await run(funcs);
+      await minerCardRewards.connect(addr1).lockFunds(ID, approveAmount);
+      const id = await minerCardRewards.certToken(addr1._address, ID);
+
+      await expectRevert(
+        minerCardRewards.connect(addr2).withdraw(id),
+        "MinerCardRewards: Account has no cert to withdraw funds + dividends"
+      );
+    });
     it("should revrt if current time is before release time", async () => {
       releaseTime = time.duration.days(90).toNumber();
       initialize(releaseTime);

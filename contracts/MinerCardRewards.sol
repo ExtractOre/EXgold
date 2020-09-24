@@ -30,11 +30,12 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
     // mapping from address to lockAmount
     mapping(address => uint256) private balances;
 
+    // mapping from ID of ERC-721 to original owner
     mapping(uint256 => address) private _nfts;
 
     mapping(address => mapping(uint256 => uint256)) private _certNft;
 
-    // mapping from id to amount locked
+    // mapping from id of ERC-721 to amount locked
     mapping(uint256 => uint256) private _idlf;
 
     // total amount locked
@@ -148,6 +149,12 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
      * Emits `Release` event.
      */
     function release(uint256 _id) public fundsLocked(_id) {
+        uint256 balance = minerCards.balanceOf(msg.sender, _id);
+        require(
+            balance > 0,
+            "MinerCardRewards: Account has no cert to withdraw funds + dividends"
+        );
+
         uint256 _amountLocked = _idlf[_id];
         token.transfer(msg.sender, _amountLocked);
         uint256 nftId = _amountLocked.div(10**uint256(6));
@@ -165,8 +172,13 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
      * Emits `Withdraw` event.
      */
     function withdraw(uint256 _id) public fundsLocked(_id) {
+        uint256 balance = minerCards.balanceOf(msg.sender, _id);
         require(
-            block.timestamp >= unLockDates[msg.sender],
+            balance > 0,
+            "MinerCardRewards: Account has no cert to withdraw funds + dividends"
+        );
+        require(
+            block.timestamp >= unLockDates[_nfts[_id]],
             "MinerCardRewards: current time is before release time"
         );
 
@@ -179,6 +191,8 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
         token.transfer(msg.sender, _amountLocked.add(dividends));
         uint256 nftId = _amountLocked.div(10**uint256(6));
         transferERC1155(msg.sender, nftId);
+        _idlf[_id] = 0;
+        _nfts[_id] = address(0);
         balances[msg.sender] = balances[msg.sender].sub(_amountLocked);
         _lockedFunds = _lockedFunds.sub(_amountLocked);
         emit Withdraw(msg.sender, _amountLocked, dividends);
