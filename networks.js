@@ -1,3 +1,4 @@
+// create a secrets.json file in root, add object {projectId: INFURA_PROJECT_ID, mnemonic: Wallet mnemonic}
 const { projectId, mnemonic } = require("./secrets.json");
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
