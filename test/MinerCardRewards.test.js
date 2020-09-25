@@ -86,7 +86,7 @@ describe("MinerCardRewards", function() {
     minerCards = await MinerCards.deploy();
     exgold = await Exgold.deploy();
 
-    await exgold.initialize("EXgold", "EXG", 6, 5000000);
+    await exgold.initialize("EXgold", "EXG");
     await minerCards.addAdmin(minerCardRewards.address);
   });
 

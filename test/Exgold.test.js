@@ -21,7 +21,7 @@ describe("Exgold", function() {
   });
 
   it("should initialize contract with correct values", async () => {
-    await exgold.initialize(name, symbol, decimals, totalSupply);
+    await exgold.initialize(name, symbol);
 
     expect(await exgold.name()).to.equal(name);
     expect(await exgold.symbol()).to.equal(symbol);
@@ -30,16 +30,16 @@ describe("Exgold", function() {
   });
 
   it("should call initialize function only once", async () => {
-    await exgold.initialize(name, symbol, decimals, totalSupply);
+    await exgold.initialize(name, symbol);
 
     await expectRevert(
-      exgold.initialize("Gold", "GLD", decimals, totalSupply),
+      exgold.initialize("Gold", "GLD"),
       "Contract instance has already been initialized"
     );
   });
 
   it("should allow holder burn tokens", async () => {
-    await exgold.initialize(name, symbol, decimals, totalSupply);
+    await exgold.initialize(name, symbol);
 
     await exgold.transfer(addr1._address, 1000);
 

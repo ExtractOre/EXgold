@@ -13,15 +13,13 @@ contract Exgold is ERC20UpgradeSafe {
      * All three of these values are immutable: they can only be set once during
      * construction.
      */
-    function initialize(
-        string memory _name,
-        string memory _symbol,
-        uint8 _decimals,
-        uint256 _totalSupply
-    ) public initializer {
+    function initialize(string memory _name, string memory _symbol)
+        public
+        initializer
+    {
         __ERC20_init(_name, _symbol);
-        _setupDecimals(_decimals);
-        _mint(msg.sender, _totalSupply * (10**uint256(decimals())));
+        _setupDecimals(6);
+        _mint(msg.sender, 5000000 * (10**uint256(decimals())));
     }
 
     /**
