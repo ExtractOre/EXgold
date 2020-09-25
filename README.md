@@ -35,3 +35,13 @@ This function is called if caller wants to withdraw locked funds + dividends. Ca
 3. Deploy MinerCardRewards contract, then call its initializer function  **initialize(_minerCards = address of deployed minercards, _tokenAddress = address of deployed exgold,      _time = release time, _rate = rate)**. 
 4. Transfer 4,000,000 Exgold tokens to the MinerCardRewards contract.
 5. Transfer ETH to MinerCardRewards contract, to be used for minting ERC-721 NFTs, and transferring funds.
+
+## Build and Test
+
+```
+git clone https://github.com/ExtractOre/EXgold.git
+cd EXgold
+npm install
+
+npx buidler test
+```
