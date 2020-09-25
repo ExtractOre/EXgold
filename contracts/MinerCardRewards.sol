@@ -31,12 +31,12 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
     mapping(address => uint256) private balances;
 
     // mapping from ID of ERC-721 to original owner
-    mapping(uint256 => address) private _nfts;
+    mapping(uint256 => address) private _idToAccount;
 
     mapping(address => mapping(uint256 => uint256)) private _certNft;
 
     // mapping from id of ERC-721 to amount locked
-    mapping(uint256 => uint256) private _idlf;
+    mapping(uint256 => uint256) private _idToLockedAmount;
 
     // total amount locked
     uint256 private _lockedFunds;
@@ -66,7 +66,7 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
      */
     modifier fundsLocked(uint256 _id) {
         require(
-            _idlf[_id] != 0 && _nfts[_id] != address(0),
+            _idToLockedAmount[_id] != 0 && _idToAccount[_id] != address(0),
             "MinerCardRewards: no funds locked"
         );
         _;
@@ -131,8 +131,8 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
         minerCards.safeTransferFrom(_account, address(this), _id, 1, "");
         token.transferFrom(_account, address(this), _lockAmount);
         minerCards.mint(_account, id);
-        _nfts[id] = _account;
-        _idlf[id] = _lockAmount;
+        _idToAccount[id] = _account;
+        _idToLockedAmount[id] = _lockAmount;
         _certNft[_account][_id] = id;
         emit IssueNFT(_account, id);
         balances[_account] = balances[_account].add(_lockAmount);
@@ -155,12 +155,12 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
             "MinerCardRewards: Account has no cert to withdraw funds"
         );
 
-        uint256 _amountLocked = _idlf[_id];
+        uint256 _amountLocked = _idToLockedAmount[_id];
         token.transfer(msg.sender, _amountLocked);
         uint256 nftId = _amountLocked.div(10**uint256(6));
         transferERC1155(msg.sender, nftId);
-        _idlf[_id] = 0;
-        _nfts[_id] = address(0);
+        _idToLockedAmount[_id] = 0;
+        _idToAccount[_id] = address(0);
         _lockedFunds = _lockedFunds.sub(_amountLocked);
         balances[msg.sender] = balances[msg.sender].sub(_amountLocked);
         emit Release(msg.sender, _amountLocked);
@@ -178,11 +178,11 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
             "MinerCardRewards: Account has no cert to withdraw funds + dividends"
         );
         require(
-            block.timestamp >= unLockDates[_nfts[_id]],
+            block.timestamp >= unLockDates[_idToAccount[_id]],
             "MinerCardRewards: current time is before release time"
         );
 
-        uint256 _amountLocked = _idlf[_id];
+        uint256 _amountLocked = _idToLockedAmount[_id];
         uint256 dividends = calcDividends(_amountLocked);
         require(
             sufficientFunds(dividends) == true,
@@ -191,19 +191,19 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
         token.transfer(msg.sender, _amountLocked.add(dividends));
         uint256 nftId = _amountLocked.div(10**uint256(6));
         transferERC1155(msg.sender, nftId);
-        _idlf[_id] = 0;
-        _nfts[_id] = address(0);
+        _idToLockedAmount[_id] = 0;
+        _idToAccount[_id] = address(0);
         balances[msg.sender] = balances[msg.sender].sub(_amountLocked);
         _lockedFunds = _lockedFunds.sub(_amountLocked);
         emit Withdraw(msg.sender, _amountLocked, dividends);
     }
 
-    function idlf(uint256 id) public view returns (uint256) {
-        return _idlf[id];
+    function idToLockedAmount(uint256 id) public view returns (uint256) {
+        return _idToLockedAmount[id];
     }
 
-    function nfts(uint256 id) public view returns (address) {
-        return _nfts[id];
+    function idToAccount(uint256 id) public view returns (address) {
+        return _idToAccount[id];
     }
 
     function certToken(address _account, uint256 _id)

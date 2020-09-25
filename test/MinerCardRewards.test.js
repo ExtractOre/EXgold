@@ -281,14 +281,14 @@ describe("MinerCardRewards", function() {
 
       // Before release transaction
       const erc1155_1 = await minerCards.balanceOf(addr1._address, ID);
-      const idlf_1 = await minerCardRewards.idlf(id);
+      const idlf_1 = await minerCardRewards.idToLockedAmount(id);
       const erc20_1 = await exgold.balanceOf(addr1._address);
 
       await minerCardRewards.connect(addr1).release(id);
 
       // After release transaction
       const erc1155_2 = await minerCards.balanceOf(addr1._address, ID);
-      const idlf_2 = await minerCardRewards.idlf(id);
+      const idlf_2 = await minerCardRewards.idToLockedAmount(id);
       const erc20_2 = await exgold.balanceOf(addr1._address);
 
       // Before
