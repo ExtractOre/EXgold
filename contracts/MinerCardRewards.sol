@@ -152,7 +152,7 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
         uint256 balance = minerCards.balanceOf(msg.sender, _id);
         require(
             balance > 0,
-            "MinerCardRewards: Account has no cert to withdraw funds + dividends"
+            "MinerCardRewards: Account has no cert to withdraw funds"
         );
 
         uint256 _amountLocked = _idlf[_id];

@@ -259,7 +259,7 @@ describe("MinerCardRewards", function() {
 
       await expectRevert(
         minerCardRewards.connect(addr2).release(id),
-        "MinerCardRewards: Account has no cert to withdraw funds + dividends"
+        "MinerCardRewards: Account has no cert to withdraw funds"
       );
     });
 
@@ -277,16 +277,29 @@ describe("MinerCardRewards", function() {
 
       await run(funcs);
       await minerCardRewards.connect(addr1).lockFunds(ID, approveAmount);
-
       const id = await minerCardRewards.certToken(addr1._address, ID);
-      await minerCardRewards.connect(addr1).release(id);
-      const balance = await exgold.balanceOf(addr1._address);
-      const balERC1155 = await minerCards.balanceOf(addr1._address, ID);
-      const idlf = await minerCardRewards.idlf(id);
 
-      expect(idlf).to.equal(0);
-      expect(balance).to.equal(transferAmount);
-      expect(balERC1155).to.equal(1);
+      // Before release transaction
+      const erc1155_1 = await minerCards.balanceOf(addr1._address, ID);
+      const idlf_1 = await minerCardRewards.idlf(id);
+      const erc20_1 = await exgold.balanceOf(addr1._address);
+
+      await minerCardRewards.connect(addr1).release(id);
+
+      // After release transaction
+      const erc1155_2 = await minerCards.balanceOf(addr1._address, ID);
+      const idlf_2 = await minerCardRewards.idlf(id);
+      const erc20_2 = await exgold.balanceOf(addr1._address);
+
+      // Before
+      expect(erc1155_1).to.equal(0);
+      expect(idlf_1).to.equal(approveAmount);
+      expect(erc20_1).to.equal(transferAmount - approveAmount);
+
+      //After
+      expect(erc1155_2).to.equal(1);
+      expect(idlf_2).to.equal(0);
+      expect(erc20_2).to.equal(transferAmount);
     });
   });
 
