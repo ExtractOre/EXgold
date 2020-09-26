@@ -1,11 +1,11 @@
 {
   "contracts": {
     "Exgold": {
-      "address": "0x97f3D989E914bf0B8e1cE3B16103EB86a00812F6",
-      "constructorCode": "608060405234801561001057600080fd5b50611c5e806100206000396000f3fe",
-      "bodyBytecodeHash": "6a142c03930d2c18ac0d4cf362ce72e787b9ccdbf4252f82eecce49a63e5961b",
-      "localBytecodeHash": "c70444b260e951b20dfac9f619fb3fb557d003acdbac2d61799190bd76d536d5",
-      "deployedBytecodeHash": "c70444b260e951b20dfac9f619fb3fb557d003acdbac2d61799190bd76d536d5",
+      "address": "0x29D1283715E5957978f228Fb677eB952AF3ba91E",
+      "constructorCode": "608060405234801561001057600080fd5b50611c49806100206000396000f3fe",
+      "bodyBytecodeHash": "10ee05d37d4eb8f84e3ccc9a78b2dcea4ae235f53ef943202ab6f43b79ca00d2",
+      "localBytecodeHash": "832637acaae67127c5340176aa01d7bd7732587fb44c2f2302bdad0ac31da897",
+      "deployedBytecodeHash": "832637acaae67127c5340176aa01d7bd7732587fb44c2f2302bdad0ac31da897",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -53,89 +53,89 @@
           "contract": "Initializable",
           "path": "@openzeppelin/contracts-ethereum-package/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 50,
+          "astId": 8128,
           "type": "t_bool",
-          "src": "757:24:1"
+          "src": "757:24:2"
         },
         {
           "contract": "Initializable",
           "path": "@openzeppelin/contracts-ethereum-package/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 53,
+          "astId": 8131,
           "type": "t_bool",
-          "src": "876:25:1"
+          "src": "876:25:2"
         },
         {
           "contract": "Initializable",
           "path": "@openzeppelin/contracts-ethereum-package/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 118,
+          "astId": 8196,
           "type": "t_array:50<t_uint256>",
-          "src": "1982:29:1"
+          "src": "1982:29:2"
         },
         {
           "contract": "ContextUpgradeSafe",
           "path": "@openzeppelin/contracts-ethereum-package/contracts/GSN/Context.sol",
           "label": "__gap",
-          "astId": 43,
+          "astId": 8121,
           "type": "t_array:50<t_uint256>",
-          "src": "1277:25:0"
+          "src": "1277:25:1"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol",
           "label": "_balances",
-          "astId": 339,
+          "astId": 8417,
           "type": "t_mapping<t_uint256>",
-          "src": "1481:46:3"
+          "src": "1481:46:4"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol",
           "label": "_allowances",
-          "astId": 345,
+          "astId": 8423,
           "type": "t_mapping<t_uint256>",
-          "src": "1534:69:3"
+          "src": "1534:69:4"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol",
           "label": "_totalSupply",
-          "astId": 347,
+          "astId": 8425,
           "type": "t_uint256",
-          "src": "1610:28:3"
+          "src": "1610:28:4"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol",
           "label": "_name",
-          "astId": 349,
+          "astId": 8427,
           "type": "t_string",
-          "src": "1645:20:3"
+          "src": "1645:20:4"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol",
           "label": "_symbol",
-          "astId": 351,
+          "astId": 8429,
           "type": "t_string",
-          "src": "1671:22:3"
+          "src": "1671:22:4"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol",
           "label": "_decimals",
-          "astId": 353,
+          "astId": 8431,
           "type": "t_uint8",
-          "src": "1699:23:3"
+          "src": "1699:23:4"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol",
           "label": "__gap",
-          "astId": 848,
+          "astId": 8926,
           "type": "t_array:44<t_uint256>",
-          "src": "11045:25:3"
+          "src": "11045:25:4"
         }
       ],
       "warnings": {
@@ -143,7 +143,9 @@
         "hasSelfDestruct": false,
         "hasDelegateCall": false,
         "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": []
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
       }
     }
   },
@@ -156,6 +158,13 @@
         "implementation": "0x97f3D989E914bf0B8e1cE3B16103EB86a00812F6",
         "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
         "kind": "Upgradeable"
+      },
+      {
+        "address": "0xC0f365ebDCaC5Bd6FFAF80c048bBA860727F9035",
+        "version": "1.0.0",
+        "implementation": "0x29D1283715E5957978f228Fb677eB952AF3ba91E",
+        "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
+        "kind": "Upgradeable"
       }
     ],
     "EXgold/MinerCards": [
@@ -163,6 +172,18 @@
         "address": "0x0d1D43CeDFEBA724cd4Ab822Dd7931fd2af5eD52",
         "kind": "NonProxy",
         "bytecodeHash": "901603ff57047220af22579ffe3d4b64606971970adffc7e37ff17daef1c8883"
+      },
+      {
+        "address": "0xEC999F9477CD4182f54424120061451FC89d2b91",
+        "kind": "NonProxy",
+        "bytecodeHash": "d007bfe4d1f6d96ff9c11cfe25eda90588fd45b1100504a346b72e0428e4c821"
+      }
+    ],
+    "EXgold/MinerCardRewards": [
+      {
+        "address": "0xeA253FB87D80cacbF4bE1EaCB2951F032Ad33C2f",
+        "kind": "NonProxy",
+        "bytecodeHash": "aec65e0cefaf2b886b00478492137c4812219fc02ccdea26faaa055bdc50234c"
       }
     ]
   },

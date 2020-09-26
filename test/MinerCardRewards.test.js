@@ -15,7 +15,7 @@ describe("MinerCardRewards", function() {
 
   const transferAmount = 10000 * decimals;
 
-  let releaseTime;
+  const releaseTime = time.duration.days(90).toNumber();
   let MinerCardRewards, minerCardRewards;
   let MinerCards, minerCards;
   let Exgold, exgold;
@@ -82,43 +82,21 @@ describe("MinerCardRewards", function() {
     MinerCards = await ethers.getContractFactory("MinerCards");
     Exgold = await ethers.getContractFactory("Exgold");
 
-    minerCardRewards = await MinerCardRewards.deploy();
-    minerCards = await MinerCards.deploy();
     exgold = await Exgold.deploy();
-
+    await exgold.deployed();
     await exgold.initialize("EXgold", "EXG");
+
+    minerCards = await MinerCards.deploy();
+    await minerCards.deployed();
+
+    minerCardRewards = await MinerCardRewards.deploy(
+      releaseTime,
+      rate,
+      minerCards.address,
+      exgold.address
+    );
+    await minerCardRewards.deployed();
     await minerCards.addAdmin(minerCardRewards.address);
-  });
-
-  describe("initialize(address, address, uint256, uint256)", function() {
-    it("should initialize contract once with correct values", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
-      await transferExgoldToRewardsContract();
-
-      const t = await minerCardRewards.releaseTime();
-      const r = await minerCardRewards.getRate();
-      expect(t).to.equal(releaseTime);
-      expect(r).to.equal(rate);
-    });
-
-    it("should revert if initialize is called more than once", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-
-      // first call
-      initialize(releaseTime);
-      await transferExgoldToRewardsContract();
-
-      await expectRevert(
-        minerCardRewards.initialize(
-          minerCards.address,
-          exgold.address,
-          releaseTime,
-          rate
-        ),
-        "Contract instance has already been initialized"
-      );
-    });
   });
 
   describe("lockFunds(address, uint256, uint256)", function() {
@@ -131,8 +109,9 @@ describe("MinerCardRewards", function() {
         approve,
       };
 
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
+      console.log("TIME: ", releaseTime);
       await transferExgoldToRewardsContract();
       await run(funcs);
 
@@ -148,12 +127,12 @@ describe("MinerCardRewards", function() {
       expect(nft).to.equal(1);
       expect(balance).to.equal(approveAmount);
       expect(balAddr1).to.equal(0);
-      expect(id).to.not.equal(0); // Not recommended
+      expect(id).to.not.equal(0);
     });
 
     it("should revert if invalid token ID", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -171,8 +150,8 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revert if user has insufficient miner cards", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
 
       await expectRevert(
@@ -182,8 +161,8 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revert if insufficient allowance set for MinerCardsRewards  contract", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -200,8 +179,8 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revert if invalid lock amount provided", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -221,8 +200,8 @@ describe("MinerCardRewards", function() {
 
   describe("release()", function() {
     it("should revert if no funds locked", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -242,8 +221,8 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revrt if account has no ERC-721", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -264,8 +243,8 @@ describe("MinerCardRewards", function() {
     });
 
     it("should release locked funds", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -305,8 +284,8 @@ describe("MinerCardRewards", function() {
 
   describe("withdraw()", function() {
     it("should withdraw funds", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -333,8 +312,8 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revrt if account has no ERC-721", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -354,8 +333,8 @@ describe("MinerCardRewards", function() {
       );
     });
     it("should revrt if current time is before release time", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -376,8 +355,8 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revrt if no funds locked", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
 
       await expectRevert(
@@ -387,8 +366,8 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revrt if insufficient funds to pay dividends", async () => {
-      releaseTime = time.duration.days(90).toNumber();
-      initialize(releaseTime);
+      //releaseTime = time.duration.days(90).toNumber();
+      //initialize(releaseTime);
       const funcs = {
         transfer,
         mintMultiple,

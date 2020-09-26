@@ -3,13 +3,10 @@
 pragma solidity ^0.6.0;
 
 import "./MinerCards.sol";
-import "@nomiclabs/buidler/console.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155Holder.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/Initializable.sol";
 
-contract MinerCardRewards is Initializable, ERC1155Holder {
+contract MinerCardRewards is ERC1155Holder {
     using SafeMath for uint256;
 
     uint256 private count = 0;
@@ -80,15 +77,15 @@ contract MinerCardRewards is Initializable, ERC1155Holder {
      * All three of these values are immutable: they can only be set once during
      * construction.
      */
-    function initialize(
-        address _minerCards,
-        address _tokenAddress,
+    constructor(
         uint256 _time,
-        uint256 _rate
-    ) public initializer {
+        uint256 _rate,
+        address __minerCardsAddress,
+        address _tokenAddress
+    ) public {
         _releaseTime = _time;
         rate = _rate;
-        minerCards = MinerCards(_minerCards);
+        minerCards = MinerCards(__minerCardsAddress);
         token = IERC20(_tokenAddress);
     }
 

@@ -21,6 +21,7 @@ describe("MinerCards", function() {
 
     MinerCards = await ethers.getContractFactory("MinerCards");
     minerCards = await MinerCards.deploy();
+    await minerCards.deployed();
   });
 
   describe("mint(address, uint256, uint256)", function() {

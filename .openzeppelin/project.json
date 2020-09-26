@@ -1,7 +1,8 @@
 {
   "manifestVersion": "2.2",
   "contracts": {
-    "Exgold": "Exgold"
+    "Exgold": "Exgold",
+    "MinerCardRewards": "MinerCardRewards"
   },
   "dependencies": {
     "@openzeppelin/contracts-ethereum-package": "^3.0.0"
