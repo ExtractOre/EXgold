@@ -21,14 +21,14 @@ contract MinerCardRewards is ERC1155Holder {
     uint256 private _releaseTime;
     uint256 private rate;
 
-    // mapping from address to time
-    mapping(address => uint256) private unLockDates;
-
-    // mapping from address to lockAmount
-    mapping(address => uint256) private balances;
-
     // mapping from ID of ERC-721 to original owner
     mapping(uint256 => address) private _idToAccount;
+
+    // mapping from ID of ERC-721 to date
+    mapping(uint256 => uint256) private _idToDate;
+
+    // mapping from ID of ERC-721 to ID of ERC-ERC-1155
+    mapping(uint256 => uint256) private _idToERC1155;
 
     mapping(address => mapping(uint256 => uint256)) private _certNft;
 
@@ -130,11 +130,11 @@ contract MinerCardRewards is ERC1155Holder {
         minerCards.mint(_account, id);
         _idToAccount[id] = _account;
         _idToLockedAmount[id] = _lockAmount;
+        _idToDate[id] = block.timestamp.add(_releaseTime);
+        _idToERC1155[id] = _id;
         _certNft[_account][_id] = id;
         emit IssueNFT(_account, id);
-        balances[_account] = balances[_account].add(_lockAmount);
         _lockedFunds = _lockedFunds.add(_lockAmount);
-        unLockDates[_account] = block.timestamp.add(_releaseTime);
         emit LockFund(_account, _id, _lockAmount);
     }
 
@@ -154,12 +154,10 @@ contract MinerCardRewards is ERC1155Holder {
 
         uint256 _amountLocked = _idToLockedAmount[_id];
         token.transfer(msg.sender, _amountLocked);
-        uint256 nftId = _amountLocked.div(10**uint256(6));
+        uint256 nftId = _idToERC1155[_id];
         transferERC1155(msg.sender, nftId);
-        _idToLockedAmount[_id] = 0;
-        _idToAccount[_id] = address(0);
+        deleteId(_id);
         _lockedFunds = _lockedFunds.sub(_amountLocked);
-        balances[msg.sender] = balances[msg.sender].sub(_amountLocked);
         emit Release(msg.sender, _amountLocked);
     }
 
@@ -175,7 +173,7 @@ contract MinerCardRewards is ERC1155Holder {
             "MinerCardRewards: Account has no cert to withdraw funds + dividends"
         );
         require(
-            block.timestamp >= unLockDates[_idToAccount[_id]],
+            block.timestamp >= _idToDate[_id],
             "MinerCardRewards: current time is before release time"
         );
 
@@ -186,11 +184,9 @@ contract MinerCardRewards is ERC1155Holder {
             "MinerCardRewards: Insufficient funds to pay dividends"
         );
         token.transfer(msg.sender, _amountLocked.add(dividends));
-        uint256 nftId = _amountLocked.div(10**uint256(6));
+        uint256 nftId = _idToERC1155[_id];
         transferERC1155(msg.sender, nftId);
-        _idToLockedAmount[_id] = 0;
-        _idToAccount[_id] = address(0);
-        balances[msg.sender] = balances[msg.sender].sub(_amountLocked);
+        deleteId(_id);
         _lockedFunds = _lockedFunds.sub(_amountLocked);
         emit Withdraw(msg.sender, _amountLocked, dividends);
     }
@@ -211,6 +207,13 @@ contract MinerCardRewards is ERC1155Holder {
         return _certNft[_account][_id];
     }
 
+    function deleteId(uint256 _id) private {
+        _idToLockedAmount[_id] = 0;
+        _idToAccount[_id] = address(0);
+        _idToERC1155[_id] = 0;
+        _idToDate[_id] = 0;
+    }
+
     // checks if `_id` is a valid token type
     function validateTokenType(uint256 _id) internal pure returns (bool) {
         if (
@@ -226,7 +229,7 @@ contract MinerCardRewards is ERC1155Holder {
         return false;
     }
 
-    function getId() public returns (uint256) {
+    function getId() private returns (uint256) {
         count = count.add(1);
         if (
             count == MINERCARD_1 ||
@@ -242,12 +245,12 @@ contract MinerCardRewards is ERC1155Holder {
         return count;
     }
 
-    function transferERC1155(address _account, uint256 _id) public {
+    function transferERC1155(address _account, uint256 _id) private {
         minerCards.safeTransferFrom(address(this), _account, _id, 1, "");
     }
 
     function checkLockAmount(uint256 _lockAmount, uint256 _id)
-        public
+        private
         pure
         returns (bool)
     {
@@ -275,16 +278,12 @@ contract MinerCardRewards is ERC1155Holder {
         return rate;
     }
 
-    function accountReleaseTime(address _account)
-        public
-        view
-        returns (uint256)
-    {
-        return unLockDates[_account];
+    function getReleaseTime(uint256 _id) public view returns (uint256) {
+        return _idToDate[_id];
     }
 
-    function balance(address _account) public view returns (uint256) {
-        return balances[_account];
+    function balance(uint256 _id) public view returns (uint256) {
+        return _idToLockedAmount[_id];
     }
 
     function sufficientFunds(uint256 _dividends) private view returns (bool) {

@@ -109,19 +109,16 @@ describe("MinerCardRewards", function() {
         approve,
       };
 
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
       console.log("TIME: ", releaseTime);
       await transferExgoldToRewardsContract();
       await run(funcs);
 
       await minerCardRewards.connect(addr1).lockFunds(ID, approveAmount);
-      let baalance = await exgold.balanceOf(addr1._address);
-      const balance = await minerCardRewards.balance(addr1._address);
+      const id = await minerCardRewards.certToken(addr1._address, ID);
+      const balance = await minerCardRewards.balance(id);
 
       const nft = await minerCards.balanceOf(minerCardRewards.address, ID);
 
-      const id = await minerCardRewards.certToken(addr1._address, ID);
       const balAddr1 = await minerCards.balanceOf(addr1._address, ID);
 
       expect(nft).to.equal(1);
@@ -131,8 +128,6 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revert if invalid token ID", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -150,8 +145,6 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revert if user has insufficient miner cards", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
 
       await expectRevert(
@@ -161,8 +154,6 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revert if insufficient allowance set for MinerCardsRewards  contract", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -179,8 +170,6 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revert if invalid lock amount provided", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -200,8 +189,6 @@ describe("MinerCardRewards", function() {
 
   describe("release()", function() {
     it("should revert if no funds locked", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -221,8 +208,6 @@ describe("MinerCardRewards", function() {
     });
 
     it("should revrt if account has no ERC-721", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -243,8 +228,6 @@ describe("MinerCardRewards", function() {
     });
 
     it("should release locked funds", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -269,6 +252,7 @@ describe("MinerCardRewards", function() {
       const erc1155_2 = await minerCards.balanceOf(addr1._address, ID);
       const idlf_2 = await minerCardRewards.idToLockedAmount(id);
       const erc20_2 = await exgold.balanceOf(addr1._address);
+      const balance = await minerCardRewards.balance(id);
 
       // Before
       expect(erc1155_1).to.equal(0);
@@ -279,13 +263,12 @@ describe("MinerCardRewards", function() {
       expect(erc1155_2).to.equal(1);
       expect(idlf_2).to.equal(0);
       expect(erc20_2).to.equal(transferAmount);
+      expect(balance).to.equal(0);
     });
   });
 
   describe("withdraw()", function() {
     it("should withdraw funds", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -303,6 +286,8 @@ describe("MinerCardRewards", function() {
       ethers.provider.send("evm_mine"); // mine the next block
 
       const id = await minerCardRewards.certToken(addr1._address, ID);
+      const balance_1 = await minerCardRewards.balance(id);
+
       await minerCardRewards.connect(addr1).withdraw(id);
 
       const bal = await exgold.balanceOf(addr1._address);
@@ -311,9 +296,7 @@ describe("MinerCardRewards", function() {
       expect(dividends + transferAmount).to.equals(bal.toNumber());
     });
 
-    it("should revrt if account has no ERC-721", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
+    it("should revert if account has no ERC-721", async () => {
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -332,9 +315,7 @@ describe("MinerCardRewards", function() {
         "MinerCardRewards: Account has no cert to withdraw funds + dividends"
       );
     });
-    it("should revrt if current time is before release time", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
+    it("should revert if current time is before release time", async () => {
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
@@ -354,9 +335,7 @@ describe("MinerCardRewards", function() {
       );
     });
 
-    it("should revrt if no funds locked", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
+    it("should revert if no funds locked", async () => {
       await transferExgoldToRewardsContract();
 
       await expectRevert(
@@ -365,9 +344,7 @@ describe("MinerCardRewards", function() {
       );
     });
 
-    it("should revrt if insufficient funds to pay dividends", async () => {
-      //releaseTime = time.duration.days(90).toNumber();
-      //initialize(releaseTime);
+    it("should revert if insufficient funds to pay dividends", async () => {
       const funcs = {
         transfer,
         mintMultiple,

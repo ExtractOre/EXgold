@@ -165,6 +165,13 @@
         "implementation": "0x29D1283715E5957978f228Fb677eB952AF3ba91E",
         "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
         "kind": "Upgradeable"
+      },
+      {
+        "address": "0x138cB92E25524E3cDfA324b7A6610C94e6e69352",
+        "version": "1.0.0",
+        "implementation": "0x29D1283715E5957978f228Fb677eB952AF3ba91E",
+        "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
+        "kind": "Upgradeable"
       }
     ],
     "EXgold/MinerCards": [
@@ -184,6 +191,11 @@
         "address": "0xeA253FB87D80cacbF4bE1EaCB2951F032Ad33C2f",
         "kind": "NonProxy",
         "bytecodeHash": "aec65e0cefaf2b886b00478492137c4812219fc02ccdea26faaa055bdc50234c"
+      },
+      {
+        "address": "0x512f6217DA063132b9fB829534615781bA76eF2D",
+        "kind": "NonProxy",
+        "bytecodeHash": "53ddf03cb78184e32810630191fb53f109b9c68ddf745d43edd8d85b78f7433c"
       }
     ]
   },
