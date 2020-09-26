@@ -9,6 +9,9 @@ describe("MinerCards", function() {
   const tokenID = 100;
   let tokenBatchIds = [25, 50, 100, 250, 1000];
   const mintAmounts = [5000, 10000, 42195, 2000, 12000];
+  const releaseDate = 12000090;
+  const amountLocked = 2500;
+  const duration = 77676;
 
   let MinerCards, minerCards;
   let owner, addr1;
@@ -25,23 +28,46 @@ describe("MinerCards", function() {
   });
 
   describe("mint(address, uint256, uint256)", function() {
-    it("should mint 1 NFT", async () => {
-      await minerCards.mint(ownerAddress, tokenID);
+    it("should mint 1 NFT with correct values", async () => {
+      await minerCards.mint(
+        ownerAddress,
+        tokenID,
+        amountLocked,
+        duration,
+        releaseDate,
+        25
+      );
 
       const balance = await minerCards.balanceOf(ownerAddress, tokenID);
+      const _releaseDate = await minerCards.getReleaseDate(tokenID);
+      const _amountLocked = await minerCards.getAmountLocked(tokenID);
+      const isActive = await minerCards.isActive(tokenID);
+
       expect(balance).to.equal(1);
+      expect(_releaseDate).to.equal(releaseDate);
+      expect(_amountLocked).to.equal(amountLocked);
+      expect(isActive).to.equal(true);
     });
 
     it("should revert when mint is called by unauthorized sender", async () => {
       await expectRevert(
-        minerCards.connect(addr1).mint(ownerAddress, tokenID),
+        minerCards
+          .connect(addr1)
+          .mint(ownerAddress, tokenID, amountLocked, duration, releaseDate, 25),
         "Sender is not authorized!"
       );
     });
 
     it("should revert when mint is called with a null destination address", async () => {
       await expectRevert(
-        minerCards.mint(ZERO_ADDRESS, tokenID),
+        minerCards.mint(
+          ZERO_ADDRESS,
+          tokenID,
+          amountLocked,
+          duration,
+          releaseDate,
+          25
+        ),
         "ERC1155: mint to the zero address"
       );
     });
@@ -132,7 +158,14 @@ describe("MinerCards", function() {
     it("should make a safeTransfer", async () => {
       const ID = tokenBatchIds[0];
 
-      await minerCards.mint(ownerAddress, ID);
+      await minerCards.mint(
+        ownerAddress,
+        ID,
+        amountLocked,
+        duration,
+        releaseDate,
+        25
+      );
 
       await minerCards.safeTransferFrom(
         ownerAddress,
@@ -147,11 +180,31 @@ describe("MinerCards", function() {
     });
   });
 
-  describe("add admin", function() {
+  describe("More...", function() {
     it("should add an admin", async () => {
       await minerCards.addAdmin(addr1._address);
       const isAdmin = await minerCards.admin(addr1._address);
       expect(isAdmin).to.equal(true);
+    });
+
+    it("should invalidate token", async () => {
+      await minerCards.mint(
+        ownerAddress,
+        tokenID,
+        amountLocked,
+        duration,
+        releaseDate,
+        25
+      );
+      // Before
+      const isActive_1 = await minerCards.isActive(tokenID);
+      await minerCards.invalidate(tokenID);
+
+      // After
+      const isActive_2 = await minerCards.isActive(tokenID);
+
+      expect(isActive_1).to.equal(true);
+      expect(isActive_2).to.equal(false);
     });
   });
 });

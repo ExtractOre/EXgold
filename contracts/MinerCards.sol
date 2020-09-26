@@ -21,10 +21,20 @@ contract MinerCards is ERC1155 {
     // Mapping from token ID to total supply
     mapping(uint256 => uint256) public _totalSupply;
 
+    mapping(uint256 => Data) public _data;
+
+    struct Data {
+        uint256 amountLocked;
+        uint256 duration;
+        uint256 releaseDate;
+        uint256 idErc1155;
+        bool active;
+    }
+
     /**
      * @dev Require msg.sender to be an admin
      */
-    modifier isAdmin() {
+    modifier onlyAdmin() {
         require(_admins[msg.sender] == true, "Sender is not authorized!");
         _;
     }
@@ -51,8 +61,23 @@ contract MinerCards is ERC1155 {
      * - `_id`          must be between 0 and 4.
      * - `_quantity`    quantity of tokens to mint.
      */
-    function mint(address _account, uint256 _id) public isAdmin {
+    function mint(
+        address _account,
+        uint256 _id,
+        uint256 _amountLocked,
+        uint256 _duration,
+        uint256 _releaseDate,
+        uint256 _idErc1155
+    ) public onlyAdmin {
         _mint(_account, _id, 1, "");
+        Data memory data = Data(
+            _amountLocked,
+            _duration,
+            _releaseDate,
+            _idErc1155,
+            true
+        );
+        _data[_id] = data;
     }
 
     /** @dev same as mint, but it mints multiple NFTs of same ID to `_account`
@@ -65,8 +90,28 @@ contract MinerCards is ERC1155 {
         address _account,
         uint256 _id,
         uint256 _quantity
-    ) public isAdmin {
+    ) public onlyAdmin {
         _mint(_account, _id, _quantity, "");
+    }
+
+    function invalidate(uint256 _id) public onlyAdmin {
+        _data[_id].active = false;
+    }
+
+    function getAmountLocked(uint256 _id) public view returns (uint256) {
+        return _data[_id].amountLocked;
+    }
+
+    function getReleaseDate(uint256 _id) public view returns (uint256) {
+        return _data[_id].releaseDate;
+    }
+
+    function isActive(uint256 _id) public view returns (bool) {
+        return _data[_id].active;
+    }
+
+    function idERC155(uint256 _id) public view returns (uint256) {
+        return _data[_id].idErc1155;
     }
 
     function admin(address _admin) public view returns (bool) {
@@ -90,7 +135,7 @@ contract MinerCards is ERC1155 {
         address _account,
         uint256[] memory _ids,
         uint256[] memory _amounts
-    ) public isAdmin {
+    ) public onlyAdmin {
         for (uint256 i = 0; i < _ids.length; i++) {
             require(
                 validateTokenType(_ids[i]) == true,

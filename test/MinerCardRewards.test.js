@@ -149,7 +149,7 @@ describe("MinerCardRewards", function() {
 
       await expectRevert(
         minerCardRewards.connect(addr1).lockFunds(ID, approveAmount),
-        "MinerCardRewards: Account has insufficient miner cards to lock funds"
+        "MinerCardRewards: Account has insufficient ERC-1155 miner cards to lock funds"
       );
     });
 
@@ -243,27 +243,20 @@ describe("MinerCardRewards", function() {
 
       // Before release transaction
       const erc1155_1 = await minerCards.balanceOf(addr1._address, ID);
-      const idlf_1 = await minerCardRewards.idToLockedAmount(id);
-      const erc20_1 = await exgold.balanceOf(addr1._address);
-
       await minerCardRewards.connect(addr1).release(id);
 
       // After release transaction
       const erc1155_2 = await minerCards.balanceOf(addr1._address, ID);
-      const idlf_2 = await minerCardRewards.idToLockedAmount(id);
       const erc20_2 = await exgold.balanceOf(addr1._address);
-      const balance = await minerCardRewards.balance(id);
+      const isActive = await minerCards.isActive(id);
 
       // Before
       expect(erc1155_1).to.equal(0);
-      expect(idlf_1).to.equal(approveAmount);
-      expect(erc20_1).to.equal(transferAmount - approveAmount);
 
       //After
       expect(erc1155_2).to.equal(1);
-      expect(idlf_2).to.equal(0);
       expect(erc20_2).to.equal(transferAmount);
-      expect(balance).to.equal(0);
+      expect(isActive).to.equal(false);
     });
   });
 
