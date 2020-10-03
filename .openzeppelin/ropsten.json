@@ -220,6 +220,27 @@
         "implementation": "0xf8451E67AA685531346Df7a32c8369be979bc20a",
         "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
         "kind": "Upgradeable"
+      },
+      {
+        "address": "0xa3d704f8bFF32eF2D9c37Fe6b701132bfcaE9992",
+        "version": "1.0.0",
+        "implementation": "0xf8451E67AA685531346Df7a32c8369be979bc20a",
+        "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
+        "kind": "Upgradeable"
+      },
+      {
+        "address": "0x5b79B997928ab18f78042057613aeac92484b6b2",
+        "version": "1.0.0",
+        "implementation": "0xf8451E67AA685531346Df7a32c8369be979bc20a",
+        "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
+        "kind": "Upgradeable"
+      },
+      {
+        "address": "0x1e32ffCaA0e73e21900c7faEa8791E4840A40D0C",
+        "version": "1.0.0",
+        "implementation": "0xf8451E67AA685531346Df7a32c8369be979bc20a",
+        "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
+        "kind": "Upgradeable"
       }
     ],
     "EXgold/MinerCards": [
@@ -237,6 +258,21 @@
         "address": "0x76d039406F1cBb4f5fFAe399e739d21A8Ad7AC77",
         "kind": "NonProxy",
         "bytecodeHash": "ba2876af58fce7cade8ed9285d560f9cc96d46188bd2327720d8d2d9b725a97a"
+      },
+      {
+        "address": "0x8cB2E129E1A12458841c39edde0be08b35887e48",
+        "kind": "NonProxy",
+        "bytecodeHash": "ba2876af58fce7cade8ed9285d560f9cc96d46188bd2327720d8d2d9b725a97a"
+      },
+      {
+        "address": "0xe13928add28C204a9B2BA4A0dEA70578Ef63126d",
+        "kind": "NonProxy",
+        "bytecodeHash": "0a84deb35f85ecc1cf5f394bbbda181a3c500d3e9828bdf28b5e5c9f14e139db"
+      },
+      {
+        "address": "0xaB4F8d27CD51319Ce9B1D3B80c820e042896C7b6",
+        "kind": "NonProxy",
+        "bytecodeHash": "0a84deb35f85ecc1cf5f394bbbda181a3c500d3e9828bdf28b5e5c9f14e139db"
       }
     ],
     "EXgold/MinerCardRewards": [
@@ -254,6 +290,21 @@
         "address": "0x0653E4D1786896EfeB92f41548Ea86764Ca4752A",
         "kind": "NonProxy",
         "bytecodeHash": "87593f4449e263ea9472530cbc4475978700b09548eb350c605687c929583515"
+      },
+      {
+        "address": "0xdA6135dd89169541eE967C06C5e02891358915f9",
+        "kind": "NonProxy",
+        "bytecodeHash": "87593f4449e263ea9472530cbc4475978700b09548eb350c605687c929583515"
+      },
+      {
+        "address": "0xf3271404dF8C593BA7F87959E72B68F44e73ab11",
+        "kind": "NonProxy",
+        "bytecodeHash": "87593f4449e263ea9472530cbc4475978700b09548eb350c605687c929583515"
+      },
+      {
+        "address": "0x5944f829bEEF6cD7c13B847a9BBD81d06A2D2538",
+        "kind": "NonProxy",
+        "bytecodeHash": "b88dd735faf577d8ce0052d54ea10dd11fd6ee3b65f78c38d42182f7b6fe31a0"
       }
     ]
   },

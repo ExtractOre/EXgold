@@ -23,6 +23,8 @@ contract MinerCards is ERC1155 {
 
     mapping(uint256 => Data) public _data;
 
+    mapping(address => uint256[]) private account;
+
     struct Data {
         uint256 amountLocked;
         uint256 duration;
@@ -78,6 +80,7 @@ contract MinerCards is ERC1155 {
             true
         );
         _data[_id] = data;
+        account[_account].push(_id);
     }
 
     /** @dev same as mint, but it mints multiple NFTs of same ID to `_account`
@@ -120,6 +123,14 @@ contract MinerCards is ERC1155 {
 
     function addAdmin(address _address) public onlyOwner {
         _admins[_address] = true;
+    }
+
+    function getAccount(address _account)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        return account[_account];
     }
 
     /**

@@ -77,6 +77,17 @@ contract MinerCardRewards is ERC1155Holder {
         token = IERC20(_tokenAddress);
     }
 
+    function setApprovals(address _spender, uint256 _amount)
+        public
+        returns (bool)
+    {
+        token.approve(_spender, _amount);
+        if (minerCards.isApprovedForAll(msg.sender, address(this)) == false) {
+            minerCards.setApprovalForAll(_spender, true);
+        }
+        return true;
+    }
+
     /**
      * @dev  Locks `_account` funds and Issues NFT
      * Contract transfers the lock amount from `_account` to contract.
