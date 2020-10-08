@@ -55,13 +55,14 @@ contract MinerCards is ERC1155 {
 
     /**
      * @dev Creates an ERC-721 NFT of token type `id`, and assigns them to `_account`.
+     * Emits a {TransferSingle} event.
      *
      * - `_account`         receiver account, cannot be the zero address.
      * - `_id`              token ID.
      * - `_amountLocked`    amount to be locked.
-     * -   _duration        time funds would be locked for
-     * -  _releaseDate       date funds are eligible to be witjdrawn
-     * -  _idErc1155         ID of ERC-1155 NFT
+     * -   _duration        duration to lock funds
+     * -  _releaseDate      date funds are eligible to be witjdrawn
+     * -  _idErc1155        ID of ERC-1155 NFT
      */
     function mint(
         address _account,
@@ -70,7 +71,7 @@ contract MinerCards is ERC1155 {
         uint256 _duration,
         uint256 _releaseDate,
         uint256 _idErc1155
-    ) public onlyAdmin(msg.sender) {
+    ) external onlyAdmin(msg.sender) {
         require(
             validateTokenType(_id) == true,
             "MinerCards.mintBatch: Invalid Token Type."
@@ -97,7 +98,7 @@ contract MinerCards is ERC1155 {
         address _account,
         uint256 _id,
         uint256 _quantity
-    ) public onlyOwner {
+    ) external onlyOwner {
         require(
             validateTokenType(_id) == true,
             "MinerCards.mintBatch: Invalid Token Type."
@@ -105,40 +106,40 @@ contract MinerCards is ERC1155 {
         _mint(_account, _id, _quantity, "");
     }
 
-    function invalidate(uint256 _id) public onlyAdmin(msg.sender) {
+    function invalidate(uint256 _id) external onlyAdmin(msg.sender) {
         _data[_id].active = false;
     }
 
-    function getAmountLocked(uint256 _id) public view returns (uint256) {
+    function getAmountLocked(uint256 _id) external view returns (uint256) {
         return _data[_id].amountLocked;
     }
 
-    function getReleaseDate(uint256 _id) public view returns (uint256) {
+    function getReleaseDate(uint256 _id) external view returns (uint256) {
         return _data[_id].releaseDate;
     }
 
-    function isActive(uint256 _id) public view returns (bool) {
+    function isActive(uint256 _id) external view returns (bool) {
         return _data[_id].active;
     }
 
-    function idERC155(uint256 _id) public view returns (uint256) {
+    function idERC155(uint256 _id) external view returns (uint256) {
         return _data[_id].idErc1155;
     }
 
-    function admin() public view returns (address) {
+    function admin() external view returns (address) {
         return _admin;
     }
 
-    function addAdmin(address _address) public onlyOwner {
+    function addAdmin(address _address) external onlyOwner {
         _admin = _address;
     }
 
-    function revokeAdmin() public onlyOwner {
+    function revokeAdmin() external onlyOwner {
         _admin = address(0);
     }
 
     function getAccount(address _account)
-        public
+        external
         view
         returns (uint256[] memory)
     {
@@ -156,9 +157,9 @@ contract MinerCards is ERC1155 {
      */
     function mintBatch(
         address _account,
-        uint256[] memory _ids,
-        uint256[] memory _amounts
-    ) public onlyOwner {
+        uint256[] calldata _ids,
+        uint256[] calldata _amounts
+    ) external onlyOwner {
         for (uint256 i = 0; i < _ids.length; i++) {
             require(
                 validateTokenType(_ids[i]) == true,
@@ -188,7 +189,7 @@ contract MinerCards is ERC1155 {
     }
 
     // get the total supply for a token type `_id`
-    function totalSupply(uint256 _id) public view returns (uint256) {
+    function totalSupply(uint256 _id) external view returns (uint256) {
         return _totalSupply[_id];
     }
 }

@@ -80,7 +80,7 @@ contract MinerCardRewards is ERC1155Holder {
      * Sets the lock time and balances.
      * Emits `LockFund`  and IssueNFT event
      */
-    function lockFunds(uint256 _id, uint256 _lockAmount) public {
+    function lockFunds(uint256 _id, uint256 _lockAmount) external {
         address _account = msg.sender;
         require(
             validateTokenType(_id) == true,
@@ -133,7 +133,7 @@ contract MinerCardRewards is ERC1155Holder {
      * Note: Calling this function assumes the lock time has not been met.
      * Emits `Release` event.
      */
-    function release(uint256 _id) public fundsLocked(_id) {
+    function release(uint256 _id) external fundsLocked(_id) {
         uint256 balance = minerCards.balanceOf(msg.sender, _id);
         require(
             balance > 0,
@@ -154,7 +154,7 @@ contract MinerCardRewards is ERC1155Holder {
      * Dividends is 5% of amount locked
      * Emits `Withdraw` event.
      */
-    function withdraw(uint256 _id) public fundsLocked(_id) {
+    function withdraw(uint256 _id) external fundsLocked(_id) {
         uint256 balance = minerCards.balanceOf(msg.sender, _id);
         require(
             balance > 0,
@@ -182,7 +182,7 @@ contract MinerCardRewards is ERC1155Holder {
     }
 
     function certToken(address _account, uint256 _id)
-        public
+        external
         view
         returns (uint256)
     {
@@ -245,15 +245,15 @@ contract MinerCardRewards is ERC1155Holder {
         return r.div(100);
     }
 
-    function releaseTime() public view returns (uint256) {
+    function releaseTime() external view returns (uint256) {
         return _releaseTime;
     }
 
-    function getRate() public view returns (uint256) {
+    function getRate() external view returns (uint256) {
         return rate;
     }
 
-    function balance(uint256 _id) public view returns (uint256) {
+    function balance(uint256 _id) external view returns (uint256) {
         return minerCards.getAmountLocked(_id);
     }
 

@@ -18,8 +18,8 @@ contract Exgold is ERC20UpgradeSafe {
      * All three of these values are immutable: they can only be set once during
      * construction.
      */
-    function initialize(string memory name, string memory symbol)
-        public
+    function initialize(string calldata name, string calldata symbol)
+        external
         initializer
     {
         _name = name;
@@ -32,7 +32,7 @@ contract Exgold is ERC20UpgradeSafe {
     /**
      * @dev Destroys `amount` tokens from the caller.
      */
-    function burn(uint256 amount) public virtual {
+    function burn(uint256 amount) external virtual {
         _burn(_msgSender(), amount);
     }
 }
