@@ -16,7 +16,7 @@ contract MinerCards is ERC1155 {
     uint256 public constant MINERCARD_4 = 250;
     uint256 public constant MINERCARD_5 = 1000;
 
-    mapping(address => bool) public _admins;
+    address private _admin;
 
     // Mapping from token ID to total supply
     mapping(uint256 => uint256) public _totalSupply;
@@ -36,8 +36,8 @@ contract MinerCards is ERC1155 {
     /**
      * @dev Require msg.sender to be an admin
      */
-    modifier onlyAdmin() {
-        require(_admins[msg.sender] == true, "Sender is not authorized!");
+    modifier onlyAdmin(address _address) {
+        require(_admin == _address, "Sender is not authorized!");
         _;
     }
 
@@ -51,17 +51,17 @@ contract MinerCards is ERC1155 {
 
     constructor() public ERC1155("") {
         owner = msg.sender;
-        _admins[msg.sender] = true;
     }
 
     /**
-     * @dev Creates `amount` tokens of token type `id`, and assigns them to `_account`.
-     * It updates the token supply for the token type.
-     * Emits a {TransferSingle} event.
+     * @dev Creates an ERC-721 NFT of token type `id`, and assigns them to `_account`.
      *
-     * - `_account`      cannot be the zero address.
-     * - `_id`          must be between 0 and 4.
-     * - `_quantity`    quantity of tokens to mint.
+     * - `_account`         receiver account, cannot be the zero address.
+     * - `_id`              token ID.
+     * - `_amountLocked`    amount to be locked.
+     * -   _duration        time funds would be locked for
+     * -  _releaseDate       date funds are eligible to be witjdrawn
+     * -  _idErc1155         ID of ERC-1155 NFT
      */
     function mint(
         address _account,
@@ -70,7 +70,11 @@ contract MinerCards is ERC1155 {
         uint256 _duration,
         uint256 _releaseDate,
         uint256 _idErc1155
-    ) public onlyAdmin {
+    ) public onlyAdmin(msg.sender) {
+        require(
+            validateTokenType(_id) == true,
+            "MinerCards.mintBatch: Invalid Token Type."
+        );
         _mint(_account, _id, 1, "");
         Data memory data = Data(
             _amountLocked,
@@ -93,11 +97,15 @@ contract MinerCards is ERC1155 {
         address _account,
         uint256 _id,
         uint256 _quantity
-    ) public onlyAdmin {
+    ) public onlyOwner {
+        require(
+            validateTokenType(_id) == true,
+            "MinerCards.mintBatch: Invalid Token Type."
+        );
         _mint(_account, _id, _quantity, "");
     }
 
-    function invalidate(uint256 _id) public onlyAdmin {
+    function invalidate(uint256 _id) public onlyAdmin(msg.sender) {
         _data[_id].active = false;
     }
 
@@ -117,12 +125,16 @@ contract MinerCards is ERC1155 {
         return _data[_id].idErc1155;
     }
 
-    function admin(address _admin) public view returns (bool) {
-        return _admins[_admin];
+    function admin() public view returns (address) {
+        return _admin;
     }
 
     function addAdmin(address _address) public onlyOwner {
-        _admins[_address] = true;
+        _admin = _address;
+    }
+
+    function revokeAdmin() public onlyOwner {
+        _admin = address(0);
     }
 
     function getAccount(address _account)
@@ -146,7 +158,7 @@ contract MinerCards is ERC1155 {
         address _account,
         uint256[] memory _ids,
         uint256[] memory _amounts
-    ) public onlyAdmin {
+    ) public onlyOwner {
         for (uint256 i = 0; i < _ids.length; i++) {
             require(
                 validateTokenType(_ids[i]) == true,

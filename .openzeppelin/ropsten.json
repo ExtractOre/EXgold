@@ -241,6 +241,20 @@
         "implementation": "0xf8451E67AA685531346Df7a32c8369be979bc20a",
         "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
         "kind": "Upgradeable"
+      },
+      {
+        "address": "0x4C909b8dE950B8Ce86472B1272a13ddA067711D7",
+        "version": "1.0.0",
+        "implementation": "0xf8451E67AA685531346Df7a32c8369be979bc20a",
+        "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
+        "kind": "Upgradeable"
+      },
+      {
+        "address": "0x1d30959fe6b8e02CFE04dBc592CC3cA5F31c3C25",
+        "version": "1.0.0",
+        "implementation": "0xf8451E67AA685531346Df7a32c8369be979bc20a",
+        "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
+        "kind": "Upgradeable"
       }
     ],
     "EXgold/MinerCards": [
@@ -271,6 +285,16 @@
       },
       {
         "address": "0xaB4F8d27CD51319Ce9B1D3B80c820e042896C7b6",
+        "kind": "NonProxy",
+        "bytecodeHash": "0a84deb35f85ecc1cf5f394bbbda181a3c500d3e9828bdf28b5e5c9f14e139db"
+      },
+      {
+        "address": "0x2df69D7CDBA5E067801A4Bd2D3109B2a71C1e147",
+        "kind": "NonProxy",
+        "bytecodeHash": "0a84deb35f85ecc1cf5f394bbbda181a3c500d3e9828bdf28b5e5c9f14e139db"
+      },
+      {
+        "address": "0x61667c8B9B895BD49a1222a292f32Fa89067A44c",
         "kind": "NonProxy",
         "bytecodeHash": "0a84deb35f85ecc1cf5f394bbbda181a3c500d3e9828bdf28b5e5c9f14e139db"
       }
@@ -305,6 +329,16 @@
         "address": "0x5944f829bEEF6cD7c13B847a9BBD81d06A2D2538",
         "kind": "NonProxy",
         "bytecodeHash": "b88dd735faf577d8ce0052d54ea10dd11fd6ee3b65f78c38d42182f7b6fe31a0"
+      },
+      {
+        "address": "0x0ceC53784677225E1eD5f62558BF58c580DA15a1",
+        "kind": "NonProxy",
+        "bytecodeHash": "87593f4449e263ea9472530cbc4475978700b09548eb350c605687c929583515"
+      },
+      {
+        "address": "0xC1d2dd5A26a1676d928d068B4bB8acEbad1CF007",
+        "kind": "NonProxy",
+        "bytecodeHash": "87593f4449e263ea9472530cbc4475978700b09548eb350c605687c929583515"
       }
     ]
   },

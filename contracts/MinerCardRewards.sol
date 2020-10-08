@@ -58,12 +58,7 @@ contract MinerCardRewards is ERC1155Holder {
     }
 
     /**
-     * @dev  Initializer function (replaces constructor)
-     * Sets the initializes {naMinerCards}, {Exgold} token, and sets value fo
-     r {time}
-     *
-     * All three of these values are immutable: they can only be set once during
-     * construction.
+     * @dev Sets the values for {_rate}, {_time}, {the ERC-20 TOKEN} and {the MinerCards contract}
      */
     constructor(
         uint256 _time,
@@ -75,17 +70,6 @@ contract MinerCardRewards is ERC1155Holder {
         rate = _rate;
         minerCards = MinerCards(__minerCardsAddress);
         token = IERC20(_tokenAddress);
-    }
-
-    function setApprovals(address _spender, uint256 _amount)
-        public
-        returns (bool)
-    {
-        token.approve(_spender, _amount);
-        if (minerCards.isApprovedForAll(msg.sender, address(this)) == false) {
-            minerCards.setApprovalForAll(_spender, true);
-        }
-        return true;
     }
 
     /**
@@ -125,7 +109,9 @@ contract MinerCardRewards is ERC1155Holder {
 
         uint256 id = getId();
         minerCards.safeTransferFrom(_account, address(this), _id, 1, "");
-        token.transferFrom(_account, address(this), _lockAmount);
+        require(
+            token.transferFrom(_account, address(this), _lockAmount) == true
+        );
         minerCards.mint(
             _account,
             id,
@@ -155,7 +141,7 @@ contract MinerCardRewards is ERC1155Holder {
         );
 
         uint256 _amountLocked = minerCards.getAmountLocked(_id);
-        token.transfer(msg.sender, _amountLocked);
+        require(token.transfer(msg.sender, _amountLocked) == true);
         uint256 erc1155Id = minerCards.idERC155(_id);
         transferERC1155(msg.sender, erc1155Id);
         minerCards.invalidate(_id);
@@ -185,7 +171,9 @@ contract MinerCardRewards is ERC1155Holder {
             sufficientFunds(dividends) == true,
             "MinerCardRewards: Insufficient funds to pay dividends"
         );
-        token.transfer(msg.sender, _amountLocked.add(dividends));
+        require(
+            token.transfer(msg.sender, _amountLocked.add(dividends)) == true
+        );
         uint256 erc1155Id = minerCards.idERC155(_id);
         transferERC1155(msg.sender, erc1155Id);
         minerCards.invalidate(_id);
