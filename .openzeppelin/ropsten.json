@@ -1,11 +1,11 @@
 {
   "contracts": {
     "Exgold": {
-      "address": "0xf8451E67AA685531346Df7a32c8369be979bc20a",
-      "constructorCode": "608060405234801561001057600080fd5b50611da2806100206000396000f3fe",
-      "bodyBytecodeHash": "0b7bcf6ac9c1a738dfd181bd22fb4001dd267917fdddec91d947c6be026dfd5d",
-      "localBytecodeHash": "f7769000d0085489df3a6cb8a5a425940216ce585c06bfb4b4c465510e35cbf3",
-      "deployedBytecodeHash": "f7769000d0085489df3a6cb8a5a425940216ce585c06bfb4b4c465510e35cbf3",
+      "address": "0x4540f90f19AD7dFd7b890A77503006e53e01b965",
+      "constructorCode": "608060405234801561001057600080fd5b50611d96806100206000396000f3fe",
+      "bodyBytecodeHash": "3ae92e70a2df85db632e1390c2a71999578d77b033c05de98162a4ada1c7ef75",
+      "localBytecodeHash": "bf180c8943fe0f730279cba1df5524035f596efa1c4f689057401b539499a60a",
+      "deployedBytecodeHash": "bf180c8943fe0f730279cba1df5524035f596efa1c4f689057401b539499a60a",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -161,32 +161,7 @@
         "hasInitialValuesInDeclarations": false,
         "uninitializedBaseContracts": [],
         "storageUncheckedVars": [],
-        "storageDiff": [
-          {
-            "action": "append",
-            "updated": {
-              "index": 11,
-              "contract": "Exgold",
-              "path": "contracts/Exgold.sol",
-              "label": "_name",
-              "astId": 2759,
-              "type": "t_string",
-              "src": "226:20:17"
-            }
-          },
-          {
-            "action": "append",
-            "updated": {
-              "index": 12,
-              "contract": "Exgold",
-              "path": "contracts/Exgold.sol",
-              "label": "_symbol",
-              "astId": 2761,
-              "type": "t_string",
-              "src": "252:22:17"
-            }
-          }
-        ]
+        "storageDiff": []
       }
     }
   },
@@ -255,6 +230,32 @@
         "implementation": "0xf8451E67AA685531346Df7a32c8369be979bc20a",
         "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
         "kind": "Upgradeable"
+      },
+      {
+        "address": "0xe12E0445BEfc2C471598565A377475495E2120a2",
+        "version": "1.0.0",
+        "implementation": "0x4540f90f19AD7dFd7b890A77503006e53e01b965",
+        "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
+        "kind": "Upgradeable"
+      },
+      {
+        "address": "0x617ccA915CD3D08171A6F056f9Cd72bd30DCEf83",
+        "version": "1.0.0",
+        "implementation": "0x4540f90f19AD7dFd7b890A77503006e53e01b965",
+        "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
+        "kind": "Upgradeable"
+      },
+      {
+        "address": "0x82206eDbA9703C3dEEBc392cD330FD17F1233832",
+        "kind": "NonProxy",
+        "bytecodeHash": "bf180c8943fe0f730279cba1df5524035f596efa1c4f689057401b539499a60a"
+      },
+      {
+        "address": "0xB00b5d13Abcaf7994d29E0086Eca13bdD0c2C632",
+        "version": "1.0.0",
+        "implementation": "0x4540f90f19AD7dFd7b890A77503006e53e01b965",
+        "admin": "0xd8E3a0dbF2a71512FEF82eeC225B9a74837a5F8a",
+        "kind": "Upgradeable"
       }
     ],
     "EXgold/MinerCards": [
@@ -297,6 +298,21 @@
         "address": "0x61667c8B9B895BD49a1222a292f32Fa89067A44c",
         "kind": "NonProxy",
         "bytecodeHash": "0a84deb35f85ecc1cf5f394bbbda181a3c500d3e9828bdf28b5e5c9f14e139db"
+      },
+      {
+        "address": "0x42E78A2a0504e345FA7EBAeF3D062E7F48FB1bD5",
+        "kind": "NonProxy",
+        "bytecodeHash": "af5438905c1d8d8e70446967c3b9751ab398dc24ac7eca58bafa0ed9e83e39a3"
+      },
+      {
+        "address": "0x5dfD78bFE31a08432E8146049f66585aeD963c2e",
+        "kind": "NonProxy",
+        "bytecodeHash": "c5b47b3860d33a083f5bf2b8f8dfaf0beb9477caaa19da2c8ecf3fcfdb9bd8f1"
+      },
+      {
+        "address": "0x660A1048BB86455079E0267ac8F1d69dBB5Dd298",
+        "kind": "NonProxy",
+        "bytecodeHash": "c5b47b3860d33a083f5bf2b8f8dfaf0beb9477caaa19da2c8ecf3fcfdb9bd8f1"
       }
     ],
     "EXgold/MinerCardRewards": [
@@ -339,6 +355,21 @@
         "address": "0xC1d2dd5A26a1676d928d068B4bB8acEbad1CF007",
         "kind": "NonProxy",
         "bytecodeHash": "87593f4449e263ea9472530cbc4475978700b09548eb350c605687c929583515"
+      },
+      {
+        "address": "0x8985B6a8a426F40369E4a56692a218bAb42417ba",
+        "kind": "NonProxy",
+        "bytecodeHash": "8417bcdfeca4376022b00f6cc7eed4953271ffd6dd6ca15c7e98fb1341445490"
+      },
+      {
+        "address": "0xAfEFE831F809A99847f7FeDa258c88EB651660eC",
+        "kind": "NonProxy",
+        "bytecodeHash": "8417bcdfeca4376022b00f6cc7eed4953271ffd6dd6ca15c7e98fb1341445490"
+      },
+      {
+        "address": "0x82DF5865bB6Ef1117b1fE3267809878b895d67ff",
+        "kind": "NonProxy",
+        "bytecodeHash": "8417bcdfeca4376022b00f6cc7eed4953271ffd6dd6ca15c7e98fb1341445490"
       }
     ]
   },

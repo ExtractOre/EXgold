@@ -10,6 +10,9 @@ contract MinerCards is ERC1155 {
 
     address private owner;
 
+    uint256[] ids;
+    uint256[] supply;
+
     uint256 public constant MINERCARD_1 = 25;
     uint256 public constant MINERCARD_2 = 50;
     uint256 public constant MINERCARD_3 = 100;
@@ -51,6 +54,22 @@ contract MinerCards is ERC1155 {
 
     constructor() public ERC1155("") {
         owner = msg.sender;
+        ids = [
+            uint256(25),
+            uint256(50),
+            uint256(100),
+            uint256(250),
+            uint256(1000)
+        ];
+        supply = [
+            uint256(5000),
+            uint256(5000),
+            uint256(1000),
+            uint256(500),
+            uint256(400)
+        ];
+
+        mintBatch(owner, ids, supply);
     }
 
     /**
@@ -73,8 +92,8 @@ contract MinerCards is ERC1155 {
         uint256 _idErc1155
     ) external onlyAdmin(msg.sender) {
         require(
-            validateTokenType(_id) == true,
-            "MinerCards.mintBatch: Invalid Token Type."
+            validateTokenType(_id) == false,
+            "MinerCards.mint: Invalid Token Type."
         );
         _mint(_account, _id, 1, "");
         Data memory data = Data(
@@ -86,24 +105,6 @@ contract MinerCards is ERC1155 {
         );
         _data[_id] = data;
         account[_account].push(_id);
-    }
-
-    /** @dev same as mint, but it mints multiple NFTs of same ID to `_account`
-     *
-     * - `_account`      cannot be the zero address.
-     * - `_id`          must be between 0 and 4.
-     * - `_quantity`    quantity of tokens to mint.
-     */
-    function mintMultiple(
-        address _account,
-        uint256 _id,
-        uint256 _quantity
-    ) external onlyOwner {
-        require(
-            validateTokenType(_id) == true,
-            "MinerCards.mintBatch: Invalid Token Type."
-        );
-        _mint(_account, _id, _quantity, "");
     }
 
     function invalidate(uint256 _id) external onlyAdmin(msg.sender) {
@@ -157,9 +158,9 @@ contract MinerCards is ERC1155 {
      */
     function mintBatch(
         address _account,
-        uint256[] calldata _ids,
-        uint256[] calldata _amounts
-    ) external onlyOwner {
+        uint256[] memory _ids,
+        uint256[] memory _amounts
+    ) private onlyOwner {
         for (uint256 i = 0; i < _ids.length; i++) {
             require(
                 validateTokenType(_ids[i]) == true,
