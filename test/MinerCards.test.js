@@ -6,7 +6,7 @@ require("chai").should;
 
 describe("MinerCards", function() {
   const mintAmount = 5000;
-  const tokenID = 100;
+  const tokenID = 1;
   let tokenBatchIds = [25, 50, 100, 250, 1000];
   const mintAmounts = [5000, 10000, 42195, 2000, 12000];
   const releaseDate = 12000090;
@@ -29,6 +29,8 @@ describe("MinerCards", function() {
 
   describe("mint(address, uint256, uint256)", function() {
     it("should mint 1 NFT with correct values", async () => {
+      await minerCards.addAdmin(ownerAddress);
+
       await minerCards.mint(
         ownerAddress,
         tokenID,
@@ -59,6 +61,8 @@ describe("MinerCards", function() {
     });
 
     it("should revert when mint is called with a null destination address", async () => {
+      await minerCards.addAdmin(ownerAddress);
+
       await expectRevert(
         minerCards.mint(
           ZERO_ADDRESS,
@@ -73,7 +77,7 @@ describe("MinerCards", function() {
     });
   });
 
-  describe("_mintBatch(address, uint256[] memory, uint256[] memory", function() {
+ /*  describe("_mintBatch(address, uint256[] memory, uint256[] memory", function() {
     it("should mint tokens in batch", async () => {
       await minerCards.mintBatch(ownerAddress, tokenBatchIds, mintAmounts);
 
@@ -152,15 +156,17 @@ describe("MinerCards", function() {
         "MinerCards.mintBatch: Invalid Token Type."
       );
     });
-  });
+  }); */
 
   describe("safeTransferFrom(address, address, uint256, uint256, bytes calldata)", function() {
     it("should make a safeTransfer", async () => {
+      await minerCards.addAdmin(ownerAddress);
+
       const ID = tokenBatchIds[0];
 
       await minerCards.mint(
         ownerAddress,
-        ID,
+        tokenID,
         amountLocked,
         duration,
         releaseDate,
@@ -183,11 +189,13 @@ describe("MinerCards", function() {
   describe("More...", function() {
     it("should add an admin", async () => {
       await minerCards.addAdmin(addr1._address);
-      const isAdmin = await minerCards.admin(addr1._address);
-      expect(isAdmin).to.equal(true);
+      const admin = await minerCards.admin();
+      expect(admin).to.equal(addr1._address);
     });
 
     it("should invalidate token", async () => {
+      await minerCards.addAdmin(ownerAddress);
+
       await minerCards.mint(
         ownerAddress,
         tokenID,

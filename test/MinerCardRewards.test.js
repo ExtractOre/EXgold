@@ -21,15 +21,6 @@ describe("MinerCardRewards", function() {
   let Exgold, exgold;
   let owner, addr1, addr2;
 
-  const initialize = async (releaseTime) => {
-    await minerCardRewards.initialize(
-      minerCards.address,
-      exgold.address,
-      releaseTime,
-      rate
-    );
-  };
-
   const transferExgoldToRewardsContract = async () => {
     await exgold.transfer(minerCardRewards.address, 4000000 * decimals);
   };
@@ -37,11 +28,6 @@ describe("MinerCardRewards", function() {
   const transfer = async () => {
     // transfer some Exgold tokens to accounts[1]
     await exgold.transfer(addr1._address, transferAmount);
-  };
-
-  const mintMultiple = async () => {
-    // mint new MinerCard token of ID.
-    await minerCards.mintMultiple(owner._address, ID, 5000);
   };
 
   const setApprovalForAll = async () => {
@@ -103,13 +89,13 @@ describe("MinerCardRewards", function() {
     it("should lock funds", async () => {
       const funcs = {
         transfer,
-        mintMultiple,
         setApprovalForAll,
         safeTransferFrom,
         approve,
       };
 
-      console.log("TIME: ", releaseTime);
+      //console.log("TIME: ", releaseTime);
+      //console.log("5 MINS:: ", time.duration.minutes(5).toNumber())
       await transferExgoldToRewardsContract();
       await run(funcs);
 
@@ -131,7 +117,6 @@ describe("MinerCardRewards", function() {
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
-        mintMultiple,
         setApprovalForAll,
         safeTransferFrom,
         approve,
@@ -157,7 +142,6 @@ describe("MinerCardRewards", function() {
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
-        mintMultiple,
         setApprovalForAll,
         safeTransferFrom,
       };
@@ -173,7 +157,6 @@ describe("MinerCardRewards", function() {
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
-        mintMultiple,
         setApprovalForAll,
         safeTransferFrom,
         approve,
@@ -192,7 +175,6 @@ describe("MinerCardRewards", function() {
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
-        mintMultiple,
         setApprovalForAll,
         safeTransferFrom,
         approve,
@@ -211,7 +193,6 @@ describe("MinerCardRewards", function() {
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
-        mintMultiple,
         setApprovalForAll,
         safeTransferFrom,
         approve,
@@ -231,7 +212,6 @@ describe("MinerCardRewards", function() {
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
-        mintMultiple,
         setApprovalForAll,
         safeTransferFrom,
         approve,
@@ -265,7 +245,6 @@ describe("MinerCardRewards", function() {
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
-        mintMultiple,
         setApprovalForAll,
         safeTransferFrom,
         approve,
@@ -293,7 +272,6 @@ describe("MinerCardRewards", function() {
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
-        mintMultiple,
         setApprovalForAll,
         safeTransferFrom,
         approve,
@@ -312,7 +290,6 @@ describe("MinerCardRewards", function() {
       await transferExgoldToRewardsContract();
       const funcs = {
         transfer,
-        mintMultiple,
         setApprovalForAll,
         safeTransferFrom,
         approve,
@@ -340,7 +317,6 @@ describe("MinerCardRewards", function() {
     it("should revert if insufficient funds to pay dividends", async () => {
       const funcs = {
         transfer,
-        mintMultiple,
         setApprovalForAll,
         safeTransferFrom,
         approve,

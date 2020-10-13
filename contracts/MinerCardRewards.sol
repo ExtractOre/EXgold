@@ -140,11 +140,11 @@ contract MinerCardRewards is ERC1155Holder {
             "MinerCardRewards: Account has no cert to withdraw funds"
         );
 
+        minerCards.invalidate(_id);
         uint256 _amountLocked = minerCards.getAmountLocked(_id);
         require(token.transfer(msg.sender, _amountLocked) == true);
         uint256 erc1155Id = minerCards.idERC155(_id);
         transferERC1155(msg.sender, erc1155Id);
-        minerCards.invalidate(_id);
         _lockedFunds = _lockedFunds.sub(_amountLocked);
         emit Release(msg.sender, _amountLocked);
     }
@@ -174,9 +174,9 @@ contract MinerCardRewards is ERC1155Holder {
         require(
             token.transfer(msg.sender, _amountLocked.add(dividends)) == true
         );
+        minerCards.invalidate(_id);
         uint256 erc1155Id = minerCards.idERC155(_id);
         transferERC1155(msg.sender, erc1155Id);
-        minerCards.invalidate(_id);
         _lockedFunds = _lockedFunds.sub(_amountLocked);
         emit Withdraw(msg.sender, _amountLocked, dividends);
     }
