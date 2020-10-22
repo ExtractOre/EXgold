@@ -94,8 +94,8 @@ describe("MinerCardRewards", function() {
         approve,
       };
 
-      //console.log("TIME: ", releaseTime);
-      //console.log("5 MINS:: ", time.duration.minutes(5).toNumber())
+      console.log("TIME: ", releaseTime);
+      console.log("5 MINS:: ", time.duration.minutes(5).toNumber())
       await transferExgoldToRewardsContract();
       await run(funcs);
 
