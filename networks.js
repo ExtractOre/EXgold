@@ -27,11 +27,11 @@ module.exports = {
           mnemonic,
           `https://mainnet.infura.io/v3/${projectId}`
         ),
-      network_id: 1, // Ropsten's id
-      gas: 1000000, // Ropsten has a lower block limit than mainnet
+      network_id: 1, 
+      gas: 1000000, 
       gasPrice: web3.utils.toWei("70", "gwei"),
-      confirmations: 2, // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      confirmations: 2, 
+      timeoutBlocks: 200, 
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
   },
