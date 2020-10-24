@@ -1,6 +1,10 @@
 // create a secrets.json file in root, add object {projectId: INFURA_PROJECT_ID, mnemonic: Wallet mnemonic}
 const { projectId, mnemonic } = require("./secrets.json");
 const HDWalletProvider = require("@truffle/hdwallet-provider");
+const Web3 = require("web3");
+const web3 = new Web3(
+  "https://mainnet.infura.io/v3/e228b98ae15a4883851dc90add14d465"
+);
 
 module.exports = {
   networks: {
