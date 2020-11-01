@@ -138,6 +138,8 @@ contract MinerCardRewards is ERC1155Holder {
      * Emits `Release` event.
      */
     function release(uint256 _id) external fundsLocked(_id) returns (bool) {
+        uint256[] memory batchIds;
+        uint256[] memory batchAmounts;
         uint256 balance = minerCards.balanceOf(msg.sender, _id);
         require(
             balance > 0,
@@ -148,7 +150,11 @@ contract MinerCardRewards is ERC1155Holder {
         uint256 _amountLocked = minerCards.getAmountLocked(_id);
         require(token.transfer(msg.sender, _amountLocked) == true);
         uint256 erc1155Id = minerCards.idERC155(_id);
-        transferERC1155(msg.sender, erc1155Id);
+        batchIds[0] = erc1155Id;
+        batchIds[1] = _id;
+        batchAmounts[0] = 1;
+        batchAmounts[1] = 1;
+        minerCards.burnBatch(msg.sender, batchIds, batchAmounts);
         _lockedFunds = _lockedFunds.sub(_amountLocked);
         emit Release(msg.sender, _amountLocked);
         return true;
@@ -160,6 +166,8 @@ contract MinerCardRewards is ERC1155Holder {
      * Emits `Withdraw` event.
      */
     function withdraw(uint256 _id) external fundsLocked(_id) returns (bool) {
+        uint256[] memory batchIds;
+        uint256[] memory batchAmounts;
         uint256 balance = minerCards.balanceOf(msg.sender, _id);
         require(
             balance > 0,
@@ -181,7 +189,11 @@ contract MinerCardRewards is ERC1155Holder {
         );
         minerCards.invalidate(_id);
         uint256 erc1155Id = minerCards.idERC155(_id);
-        transferERC1155(msg.sender, erc1155Id);
+        batchIds[0] = erc1155Id;
+        batchIds[1] = _id;
+        batchAmounts[0] = 1;
+        batchAmounts[1] = 1;
+        minerCards.burnBatch(msg.sender, batchIds, batchAmounts);
         _lockedFunds = _lockedFunds.sub(_amountLocked);
         emit Withdraw(msg.sender, _amountLocked, dividends);
         return true;

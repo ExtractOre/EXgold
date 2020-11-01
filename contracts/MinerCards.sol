@@ -107,6 +107,14 @@ contract MinerCards is ERC1155 {
         account[_account].push(_id);
     }
 
+    function burnBatch(
+        address _account,
+        uint256[] calldata _batchIds,
+        uint256[] calldata _batchAmounts
+    ) external onlyAdmin(msg.sender) {
+        _burnBatch(_account, _batchIds, _batchAmounts);
+    }
+
     function invalidate(uint256 _id) external onlyAdmin(msg.sender) {
         _data[_id].active = false;
     }

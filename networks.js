@@ -32,8 +32,8 @@ module.exports = {
           `https://mainnet.infura.io/v3/${projectId}`
         ),
       network_id: 1, 
-      gas: 1000000, 
-      gasPrice: web3.utils.toWei("70", "gwei"),
+      gas: 2000000, 
+      gasPrice: web3.utils.toWei("38", "gwei"),
       confirmations: 2, 
       timeoutBlocks: 200, 
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
